@@ -2,10 +2,12 @@ import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +23,7 @@ class App extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(40),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 PostCard(),
               ],
