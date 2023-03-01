@@ -1,8 +1,12 @@
+import 'package:daejeon_fe/model/post/post_model.dart';
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
+  final PostModel post;
+
   const PostCard({
     Key? key,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -20,9 +24,9 @@ class PostCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "2022. 11. 05",
-              style: TextStyle(
+            Text(
+              post.created,
+              style: const TextStyle(
                 color: Color(0xFF898888),
               ),
             ),
@@ -32,11 +36,11 @@ class PostCard extends StatelessWidget {
                 horizontal: 10,
               ),
               child: Row(
-                children: const [
+                children: [
                   Flexible(
                     child: Text(
-                      "test description",
-                      style: TextStyle(
+                      post.description,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
@@ -48,26 +52,30 @@ class PostCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: const [
+              children: [
                 Icon(
-                  Icons.report_gmailerrorred,
+                  post.isReported
+                      ? Icons.report_rounded
+                      : Icons.report_gmailerrorred,
                   size: 12,
                 ),
-                SizedBox(width: 2),
-                Text(
+                const SizedBox(width: 2),
+                const Text(
                   "신고",
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 11,
                   ),
                 ),
-                SizedBox(width: 7),
+                const SizedBox(width: 7),
                 Icon(
-                  Icons.favorite_border_outlined,
+                  post.isLiked
+                      ? Icons.favorite
+                      : Icons.favorite_border_outlined,
                   size: 12,
                 ),
-                SizedBox(width: 2),
-                Text(
+                const SizedBox(width: 2),
+                const Text(
                   "좋아요",
                   style: TextStyle(
                     fontSize: 11,
