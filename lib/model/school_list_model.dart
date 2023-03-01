@@ -1,5 +1,6 @@
 class SchoolListModel {
-  final String id, name, locate;
+  final String name, locate;
+  final int id;
 
   SchoolListModel({
     required this.id,

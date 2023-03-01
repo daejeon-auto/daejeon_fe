@@ -143,7 +143,8 @@ class _JoinScreenState extends State<JoinScreen> {
                                                       in snapshot.data!)
                                                     ElevatedButton(
                                                       onPressed: () =>
-                                                          schoolId = school.id,
+                                                          schoolId = school.id
+                                                              .toString(),
                                                       child: Text(
                                                         "${school.name} / ${school.locate}",
                                                       ),
