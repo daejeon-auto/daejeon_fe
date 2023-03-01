@@ -4,6 +4,6 @@ class LoginResult {
   LoginResult(this.message, this.result);
 
   LoginResult.fromJson(Map<String, dynamic> json)
-      : message = json['message'],
+      : message = json['message'] ??= "",
         result = json['result'];
 }

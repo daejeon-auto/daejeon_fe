@@ -51,7 +51,7 @@ class _JoinScreenState extends State<JoinScreen> {
   void join() async {
     try {
       await ApiService.join(body: joinModel);
-      Navigator.pop(context);
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     } on Exception catch (e) {
       if (e.toString() == "Exception: 400") {
         showDialog(
