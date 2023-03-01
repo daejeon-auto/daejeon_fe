@@ -1,3 +1,4 @@
+import 'package:daejeon_fe/screen/join_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         Flexible(
                           child: TextField(
                             controller: idController,
-                            maxLength: 100,
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(
                               hintText: "id",
@@ -81,7 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         Flexible(
                           child: TextField(
                             controller: passwordController,
-                            maxLength: 100,
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
@@ -91,6 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -98,7 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Container(),
+                                  builder: (context) => Container(
+                                    key: UniqueKey(),
+                                    child: const JoinScreen(),
+                                  ),
                                 ),
                               ),
                               child: const Text("회원가입"),

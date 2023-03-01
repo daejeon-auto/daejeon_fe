@@ -9,6 +9,7 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 300,
+      margin: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,

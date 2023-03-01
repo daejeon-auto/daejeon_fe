@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:daejeon_fe/model/common/result_model.dart';
+import 'package:daejeon_fe/model/join_model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -34,6 +35,21 @@ class ApiService {
     var body = Result.fromJson(jsonDecode(res.body));
     if (body.result == "fail") {
       throw Exception(body.message);
+    }
+  }
+
+  static join({required JoinModel body}) async {
+    var url = Uri.parse("$_domain/sign-up");
+    var res = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (res.statusCode != 201) {
+      throw Exception(res.statusCode);
     }
   }
 }
