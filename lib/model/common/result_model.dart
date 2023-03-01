@@ -1,9 +1,8 @@
 class Result {
-  final String message, result;
-
-  Result(this.message, this.result);
+  final bool hasError;
+  final dynamic data;
 
   Result.fromJson(Map<String, dynamic> json)
-      : message = json['message'],
-        result = json['result'];
+      : data = json['data'],
+        hasError = json['hasError'];
 }

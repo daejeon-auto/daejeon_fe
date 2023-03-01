@@ -1,4 +1,5 @@
 import 'package:daejeon_fe/model/join_model.dart';
+import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class JoinScreen extends StatefulWidget {
     "비밀번호",
     "비밀번호 확인",
     "이름",
-    "생년월일 ex)010101",
+    "생년월일 ex) 010101",
     "전화번호 ex) 01012341234",
     "학번"
   ];
@@ -23,6 +24,10 @@ class _JoinScreenState extends State<JoinScreen> {
   late JoinModel joinModel;
   late List<TextEditingController> controllerList = [];
   late TextEditingController invitedCode = TextEditingController();
+  late TextEditingController inputSchoolName = TextEditingController();
+  String schoolId = "";
+
+  late Future<List<SchoolListModel>> schoolList = ApiService.getSchoolList();
 
   @override
   void initState() {
@@ -46,12 +51,14 @@ class _JoinScreenState extends State<JoinScreen> {
   void join() async {
     try {
       await ApiService.join(body: joinModel);
+      Navigator.pop(context);
     } on Exception catch (e) {
       if (e.toString() == "Exception: 400") {
         showDialog(
           context: context,
           builder: (ctx) => const AlertDialog(
-            title: Text("회원가입 정보를 다시한번 확인 해주세요."),
+            title: Text("회원가입중 에러 발생"),
+            content: Text("회원가입 정보를 다시한번 확인 해주세요."),
           ),
         );
       }
@@ -110,6 +117,49 @@ class _JoinScreenState extends State<JoinScreen> {
                                     hintText: JoinScreen._inputList[i]),
                               ),
                             ),
+                          TextButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("학교 검색하기"),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        const TextField(),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        FutureBuilder(
+                                          future: schoolList,
+                                          builder: (context,
+                                              AsyncSnapshot<
+                                                      List<SchoolListModel>>
+                                                  snapshot) {
+                                            return Column(
+                                              children: [
+                                                if (snapshot.hasData)
+                                                  for (var school
+                                                      in snapshot.data!)
+                                                    ElevatedButton(
+                                                      onPressed: () =>
+                                                          schoolId = school.id,
+                                                      child: Text(
+                                                        "${school.name} / ${school.locate}",
+                                                      ),
+                                                    )
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: const Text("학교 검색하기"),
+                          ),
                           const SizedBox(
                             height: 10,
                           ),
@@ -143,19 +193,18 @@ class _JoinScreenState extends State<JoinScreen> {
                                           TextButton(
                                             onPressed: () {
                                               joinModel = JoinModel(
-                                                  id: controllerList[0].text,
-                                                  password:
-                                                      controllerList[1].text,
-                                                  name: controllerList[2].text,
-                                                  birthday:
-                                                      controllerList[3].text,
-                                                  phoneNumber:
-                                                      controllerList[4].text,
-                                                  stdNum:
-                                                      controllerList[5].text,
-                                                  code: isChecked
-                                                      ? controllerList[6].text
-                                                      : "");
+                                                id: controllerList[0].text,
+                                                password:
+                                                    controllerList[1].text,
+                                                name: controllerList[2].text,
+                                                birthday:
+                                                    controllerList[3].text,
+                                                phoneNumber:
+                                                    controllerList[4].text,
+                                                stdNum: controllerList[5].text,
+                                                code: controllerList[6].text,
+                                                schoolId: schoolId,
+                                              );
                                               join();
                                             },
                                             child: const Text("추천코드로 회원가입"),
@@ -165,6 +214,18 @@ class _JoinScreenState extends State<JoinScreen> {
                                     ),
                                   ),
                                 );
+                              } else {
+                                joinModel = JoinModel(
+                                  id: controllerList[0].text,
+                                  password: controllerList[1].text,
+                                  name: controllerList[2].text,
+                                  birthday: controllerList[3].text,
+                                  phoneNumber: controllerList[4].text,
+                                  stdNum: controllerList[5].text,
+                                  code: "",
+                                  schoolId: schoolId,
+                                );
+                                join();
                               }
                             },
                             child: const Text("회원가입"),
