@@ -7,7 +7,6 @@ import 'screen/home_screen.dart';
 void main() {
   runApp(MaterialApp(
     routes: {
-      "/": (context) => const App(),
       "/login": (context) => const LoginScreen(),
       "/join": (context) => const JoinScreen(),
     },
