@@ -21,11 +21,12 @@ class JoinScreen extends StatefulWidget {
 
 class _JoinScreenState extends State<JoinScreen> {
   bool isChecked = false;
+  bool isSchoolSet = false;
+  SchoolListModel school = SchoolListModel(id: 0, name: "", locate: "");
   late JoinModel joinModel;
   late List<TextEditingController> controllerList = [];
   late TextEditingController invitedCode = TextEditingController();
   late TextEditingController inputSchoolName = TextEditingController();
-  String schoolId = "";
 
   late Future<List<SchoolListModel>> schoolList = ApiService.getSchoolList();
 
@@ -142,9 +143,13 @@ class _JoinScreenState extends State<JoinScreen> {
                                                   for (var school
                                                       in snapshot.data!)
                                                     ElevatedButton(
-                                                      onPressed: () =>
-                                                          schoolId = school.id
-                                                              .toString(),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          this.school = school;
+                                                          isSchoolSet = true;
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
                                                       child: Text(
                                                         "${school.name} / ${school.locate}",
                                                       ),
@@ -159,7 +164,9 @@ class _JoinScreenState extends State<JoinScreen> {
                                 ),
                               );
                             },
-                            child: const Text("학교 검색하기"),
+                            child: isSchoolSet
+                                ? Text("${school.name} / ${school.locate}")
+                                : const Text("학교 검색하기"),
                           ),
                           const SizedBox(
                             height: 10,
@@ -204,7 +211,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                                     controllerList[4].text,
                                                 stdNum: controllerList[5].text,
                                                 code: controllerList[6].text,
-                                                schoolId: schoolId,
+                                                schoolId: school.id.toString(),
                                               );
                                               join();
                                             },
@@ -224,7 +231,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                   phoneNumber: controllerList[4].text,
                                   stdNum: controllerList[5].text,
                                   code: "",
-                                  schoolId: schoolId,
+                                  schoolId: school.id.toString(),
                                 );
                                 join();
                               }
