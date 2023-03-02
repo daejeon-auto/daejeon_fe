@@ -21,6 +21,8 @@ class _PostAddScreenState extends State<PostAddScreen> {
   addPost() async {
     try {
       await ApiService.writePost(description: descController.text);
+      // ignore: use_build_context_synchronously
+      return Navigator.pushNamed(context, "/");
     } on Exception catch (e) {
       if (e.toString() == "Exception: 401") {
         return Navigator.push(
@@ -39,35 +41,37 @@ class _PostAddScreenState extends State<PostAddScreen> {
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            TextField(
-              controller: descController,
-              keyboardType: TextInputType.multiline,
-              maxLength: 100,
-              maxLines: 10,
-              decoration: const InputDecoration(
-                hintText: "글 내용",
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: Colors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: descController,
+                keyboardType: TextInputType.multiline,
+                maxLength: 100,
+                maxLines: 10,
+                decoration: const InputDecoration(
+                  hintText: "글 내용",
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 1,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: addPost,
-              style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFE9EFFF),
+              TextButton(
+                onPressed: addPost,
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFE9EFFF),
+                ),
+                child: const Text("작성"),
               ),
-              child: const Text("작성"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            const Text('비속어 쓰지 마삼')
-          ],
+              const SizedBox(
+                height: 40,
+              ),
+              const Text('비속어 쓰지 마삼')
+            ],
+          ),
         ),
       ),
     );
