@@ -44,9 +44,16 @@ class _AppState extends State<App> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Icon(
-              Icons.circle,
-              size: 50,
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), color: Colors.white),
+              clipBehavior: Clip.hardEdge,
+              child: const Image(
+                  width: 50,
+                  height: 50,
+                  image: AssetImage(
+                    "assets/logo_croped.png",
+                  )),
             ),
             GestureDetector(
               child: const Icon(
@@ -65,10 +72,10 @@ class _AppState extends State<App> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RefreshIndicator(
@@ -93,30 +100,37 @@ class _AppState extends State<App> {
                       var text = "";
                       if (!snapshot.hasData) {
                         text = "글을 가져오는중 오류 발생";
-                      } else if (snapshot.data!.postList == null) {
+                      } else if (snapshot.data!.postList.isEmpty) {
                         text = '게시글이 없습니다';
                       }
-                      return LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height - 110,
-                              width: MediaQuery.of(context).size.width - 20,
-                              child: Center(
-                                child: Text(text),
+                      if (!snapshot.hasData ||
+                          snapshot.data!.postList.isEmpty) {
+                        return LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height - 110,
+                                width: MediaQuery.of(context).size.width - 20,
+                                child: Center(
+                                  child: Text(text),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                      return Expanded(
+                            );
+                          },
+                        );
+                      }
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height - 110,
+                        width: MediaQuery.of(context).size.width - 20,
                         child: ListView.separated(
-                          itemCount: snapshot.data!.postList!.length,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.postList.length,
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           itemBuilder: (context, index) {
                             return PostCard(
-                              post: snapshot.data!.postList![index],
+                              post: snapshot.data!.postList[index],
                             );
                           },
                           separatorBuilder: (
