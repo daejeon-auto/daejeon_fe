@@ -22,7 +22,7 @@ class _PostAddScreenState extends State<PostAddScreen> {
     try {
       await ApiService.writePost(description: descController.text);
       // ignore: use_build_context_synchronously
-      return Navigator.pushNamed(context, "/");
+      return Navigator.pop(context);
     } on Exception catch (e) {
       if (e.toString() == "Exception: 401") {
         return Navigator.push(
