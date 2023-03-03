@@ -90,26 +90,26 @@ class _AppState extends State<App> {
                       context,
                       AsyncSnapshot<PostListModel> snapshot,
                     ) {
+                      var text = "";
                       if (!snapshot.hasData) {
-                        return const Text("글을 가져오는중 오류 발생");
+                        text = "글을 가져오는중 오류 발생";
+                      } else if (snapshot.data!.postList == null) {
+                        text = '게시글이 없습니다';
                       }
-                      if (snapshot.data!.postList == null) {
-                        return LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height - 110,
-                                width: MediaQuery.of(context).size.width - 20,
-                                child: const Center(
-                                  child: Text('게시글이 없습니다'),
-                                ),
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height - 110,
+                              width: MediaQuery.of(context).size.width - 20,
+                              child: Center(
+                                child: Text(text),
                               ),
-                            );
-                          },
-                        );
-                      }
+                            ),
+                          );
+                        },
+                      );
                       return Expanded(
                         child: ListView.separated(
                           itemCount: snapshot.data!.postList!.length,
