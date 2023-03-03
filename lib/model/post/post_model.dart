@@ -3,6 +3,15 @@ class PostModel {
   final bool isLiked, isReported;
   final String description, created;
 
+  PostModel({
+    required this.postId,
+    required this.likedCount,
+    required this.isLiked,
+    required this.isReported,
+    required this.description,
+    required this.created,
+  });
+
   PostModel.fromJson(Map<String, dynamic> json)
       : postId = json["postId"],
         likedCount = json["likedCount"],

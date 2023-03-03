@@ -7,8 +7,10 @@ import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/post/post_model.dart';
+
 class ApiService {
-  static const String _domain = "http://172.30.1.51:80";
+  static const String _domain = "https://10.157.217.197";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     "withCredentials": "true"
@@ -21,9 +23,26 @@ class ApiService {
 
     var res = await http.post(url, headers: headers);
     if (res.statusCode != 200) throw Exception(res.statusCode);
-    var postList = PostListModel.fromJson(jsonDecode(res.body));
+    // var postList = PostListModel.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+    var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
+    List<dynamic> postListDy = body['postList'];
+    var postList = postListDy
+        .map((e) => PostModel(
+              postId: e['postId'],
+              description: e['description'],
+              created: e['created'],
+              isLiked: e['isLiked'],
+              isReported: e['isReported'],
+              likedCount: e['likedCount'],
+            ))
+        .toList();
 
-    return postList;
+    var postListModel = PostListModel(
+        totalPost: body['totalPost'],
+        totalPage: body['totalPage'],
+        postList: postList);
+
+    return postListModel;
   }
 
   static writePost({required String description}) async {
@@ -54,7 +73,7 @@ class ApiService {
     _updateCookie(res);
 
     if (res.statusCode != 200) throw Error();
-    var body = LoginResult.fromJson(jsonDecode(res.body));
+    var body = LoginResult.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     if (body.result == "fail") {
       throw Exception(body.message);
     }
