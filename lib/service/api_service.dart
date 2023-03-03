@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static const String _domain = "https://10.157.217.197";
+  static const String _domain = "https://172.30.1.51";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     "withCredentials": "true"
@@ -103,6 +103,27 @@ class ApiService {
       schoolList.add(SchoolListModel.fromJson(school));
     }
     return schoolList;
+  }
+
+  static Future<bool> report(int postId, String reason) async {
+    var url = Uri.parse("$_domain/post/report/$postId");
+    var res = await http.post(url,
+        headers: headers, body: jsonEncode({"reason": reason}));
+
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+
+    return true;
+  }
+
+  static Future<bool> convertLike(int postId) async {
+    var url = Uri.parse("$_domain/post/like/add/$postId");
+    var res = await http.post(url, headers: headers);
+
+    if (res.statusCode != 200) {
+      throw Exception(res.statusCode);
+    }
+
+    return true;
   }
 
   static void _updateCookie(http.Response response) {

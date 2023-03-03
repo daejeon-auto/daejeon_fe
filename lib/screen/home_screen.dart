@@ -39,7 +39,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FF),
+      backgroundColor: const Color.fromARGB(255, 244, 247, 255),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +52,7 @@ class _AppState extends State<App> {
                   width: 50,
                   height: 50,
                   image: AssetImage(
-                    "assets/logo_croped.png",
+                    "assets/logo.png",
                   )),
             ),
             GestureDetector(

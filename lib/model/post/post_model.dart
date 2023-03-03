@@ -1,6 +1,7 @@
 class PostModel {
-  final num postId, likedCount;
-  final bool isLiked, isReported;
+  final int postId;
+  int likedCount;
+  bool isLiked, isReported;
   final String description, created;
 
   PostModel({
