@@ -8,7 +8,6 @@ class JoinScreen extends StatefulWidget {
   static const List<String> _inputList = [
     "아이디",
     "비밀번호",
-    "비밀번호 확인",
     "이름",
     "생년월일 ex) 010101",
     "전화번호 ex) 01012341234",
