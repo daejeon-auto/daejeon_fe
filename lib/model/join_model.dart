@@ -25,7 +25,7 @@ class JoinModel {
     return {
       'loginId': id,
       'password': password,
-      'name': birthday,
+      'name': name,
       'birthDay': birthday,
       'phoneNumber': phoneNumber,
       'studentNumber': stdNum,
