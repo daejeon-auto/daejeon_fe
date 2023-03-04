@@ -32,6 +32,16 @@ class _AppState extends State<App> {
       if (e.toString() == "Exception: 401") {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
       }
+      if (e.toString().length > 20 &&
+          e.toString().substring(0, 20) == "Failed host lookup: ") {
+        showDialog(
+          context: context,
+          builder: (context) => const AlertDialog(
+            title: Text("인터넷 연결 문제 발생"),
+            content: Text("인터넷이 연결되지 않았거나 서버와 연결되지 않습니다"),
+          ),
+        );
+      }
       throw ("");
     }
   }
