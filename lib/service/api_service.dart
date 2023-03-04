@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static const String _domain = "https://172.30.1.51";
+  static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     "withCredentials": "true"
@@ -23,7 +23,6 @@ class ApiService {
 
     var res = await http.post(url, headers: headers);
     if (res.statusCode != 200) throw Exception(res.statusCode);
-    // var postList = PostListModel.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
     List<dynamic> postListDy = body['postList'];
     var postList = postListDy
