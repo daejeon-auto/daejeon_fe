@@ -1,5 +1,13 @@
 class JoinModel {
-  final String id, password, name, birthday, phoneNumber, stdNum, code, schoolId;
+  final String id,
+      password,
+      name,
+      birthday,
+      phoneNumber,
+      stdNum,
+      code,
+      schoolId,
+      authType;
 
   JoinModel({
     required this.id,
@@ -9,7 +17,8 @@ class JoinModel {
     required this.phoneNumber,
     required this.stdNum,
     required this.code,
-    required this.schoolId
+    required this.schoolId,
+    required this.authType,
   });
 
   Map<String, dynamic> toJson() {
@@ -21,7 +30,8 @@ class JoinModel {
       'phoneNumber': phoneNumber,
       'studentNumber': stdNum,
       'referCode': code,
-      'schoolId': schoolId
+      'schoolId': schoolId,
+      'authType': authType.toString(),
     };
   }
 }

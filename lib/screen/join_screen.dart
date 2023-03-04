@@ -1,7 +1,10 @@
+import 'package:daejeon_fe/model/common/auth_type.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:daejeon_fe/service/api_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
@@ -9,7 +12,7 @@ class JoinScreen extends StatefulWidget {
     "아이디",
     "비밀번호",
     "이름",
-    "생년월일 ex) 010101",
+    "생년월일 ex) 20050101",
     "전화번호 ex) 01012341234",
     "학번"
   ];
@@ -20,7 +23,7 @@ class JoinScreen extends StatefulWidget {
 
 class _JoinScreenState extends State<JoinScreen> {
   bool isChecked = false;
-  bool isSchoolSet = false;
+  bool isSchoolSet = false, isLoading = false;
   SchoolListModel school = SchoolListModel(id: 0, name: "", locate: "");
   late JoinModel joinModel;
   late List<TextEditingController> controllerList = [];
@@ -50,9 +53,13 @@ class _JoinScreenState extends State<JoinScreen> {
 
   void join() async {
     try {
+      isLoading = true;
+      setState(() {});
       await ApiService.join(body: joinModel);
       Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     } on Exception catch (e) {
+      isLoading = false;
+      setState(() {});
       if (e.toString() == "Exception: 400") {
         showDialog(
           context: context,
@@ -181,62 +188,79 @@ class _JoinScreenState extends State<JoinScreen> {
                               const Text("추천 코드 사용"),
                             ],
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (isChecked) {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text("추천코드 입력"),
-                                    content: SizedBox(
-                                      width: 100,
-                                      height: 120,
-                                      child: Column(
-                                        children: [
-                                          TextField(
-                                            controller: invitedCode,
-                                            maxLength: 10,
+                          isLoading
+                              ? LoadingAnimationWidget.staggeredDotsWave(
+                                  color: Colors.blueAccent,
+                                  size: 50,
+                                )
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    if (isChecked) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text("추천코드 입력"),
+                                          content: SizedBox(
+                                            width: 100,
+                                            height: 120,
+                                            child: Column(
+                                              children: [
+                                                TextField(
+                                                  controller: invitedCode,
+                                                  maxLength: 10,
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    joinModel = JoinModel(
+                                                      id: controllerList[0]
+                                                          .text,
+                                                      password:
+                                                          controllerList[1]
+                                                              .text,
+                                                      name: controllerList[2]
+                                                          .text,
+                                                      birthday:
+                                                          controllerList[3]
+                                                              .text,
+                                                      phoneNumber:
+                                                          controllerList[4]
+                                                              .text,
+                                                      stdNum: controllerList[5]
+                                                          .text,
+                                                      code: controllerList[6]
+                                                          .text,
+                                                      schoolId:
+                                                          school.id.toString(),
+                                                      authType: describeEnum(
+                                                          AuthType.INDIRECT),
+                                                    );
+                                                    join();
+                                                  },
+                                                  child:
+                                                      const Text("추천코드로 회원가입"),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          TextButton(
-                                            onPressed: () {
-                                              joinModel = JoinModel(
-                                                id: controllerList[0].text,
-                                                password:
-                                                    controllerList[1].text,
-                                                name: controllerList[2].text,
-                                                birthday:
-                                                    controllerList[3].text,
-                                                phoneNumber:
-                                                    controllerList[4].text,
-                                                stdNum: controllerList[5].text,
-                                                code: controllerList[6].text,
-                                                schoolId: school.id.toString(),
-                                              );
-                                              join();
-                                            },
-                                            child: const Text("추천코드로 회원가입"),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                joinModel = JoinModel(
-                                  id: controllerList[0].text,
-                                  password: controllerList[1].text,
-                                  name: controllerList[2].text,
-                                  birthday: controllerList[3].text,
-                                  phoneNumber: controllerList[4].text,
-                                  stdNum: controllerList[5].text,
-                                  code: "",
-                                  schoolId: school.id.toString(),
-                                );
-                                join();
-                              }
-                            },
-                            child: const Text("회원가입"),
-                          )
+                                        ),
+                                      );
+                                    } else {
+                                      joinModel = JoinModel(
+                                        id: controllerList[0].text,
+                                        password: controllerList[1].text,
+                                        name: controllerList[2].text,
+                                        birthday: controllerList[3].text,
+                                        phoneNumber: controllerList[4].text,
+                                        stdNum: controllerList[5].text,
+                                        code: "",
+                                        schoolId: school.id.toString(),
+                                        authType: describeEnum(AuthType.DIRECT),
+                                      );
+                                      join();
+                                    }
+                                  },
+                                  child: const Text("회원가입"),
+                                )
                         ],
                       ),
                     ),
