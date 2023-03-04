@@ -24,12 +24,7 @@ class _PostCardState extends State<PostCard> {
   void addReport(int postId, BuildContext context) async {
     try {
       await ApiService.report(postId, reason.text);
-      if (isLiked) {
-        likedCount--;
-      } else {
-        likedCount++;
-      }
-      isLiked = !isLiked;
+      isReported = !isReported;
       setState(() {});
     } on Exception catch (e) {
       if (e.toString() == "Exception: 400") {
@@ -157,8 +152,11 @@ class _PostCardState extends State<PostCard> {
                                           controller: reason,
                                         ),
                                         TextButton(
-                                            onPressed: () => addReport(
-                                                widget.post.postId, context),
+                                            onPressed: () => {
+                                                  addReport(widget.post.postId,
+                                                      context),
+                                                  Navigator.pop(context)
+                                                },
                                             child: const Text("작성"))
                                       ],
                                     ),
