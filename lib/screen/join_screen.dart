@@ -207,7 +207,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                               children: [
                                                 TextField(
                                                   controller: invitedCode,
-                                                  maxLength: 10,
+                                                  maxLength: 13,
                                                 ),
                                                 TextButton(
                                                   onPressed: () {
