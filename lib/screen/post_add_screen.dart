@@ -32,7 +32,7 @@ class _PostAddScreenState extends State<PostAddScreen> {
     } on Exception catch (e) {
       isLoading = false;
       if (e.toString() == "Exception: 400") {
-        errorMsg = "글에 비속어가 포합돼있거나 15자 이내, 혹은 100자 이상입니다.";
+        errorMsg = "글에 비속어가 포합돼있거나 15자 이내, 혹은 100자 이상이어야합니다.";
       }
       setState(() {});
       if (e.toString() == "Exception: 401") {
