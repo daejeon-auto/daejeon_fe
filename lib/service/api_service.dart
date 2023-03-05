@@ -10,7 +10,8 @@ import 'package:http/http.dart' as http;
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static const String _domain = "https://daejeon-be-production.up.railway.app";
+  static const String _domain = "https://172.30.1.51";
+  // static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     "withCredentials": "true"
