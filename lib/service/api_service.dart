@@ -6,6 +6,7 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
@@ -17,7 +18,18 @@ class ApiService {
     "withCredentials": "true"
   };
 
-  static Future<PostListModel> getPostList({
+  ApiService() {
+    _initCookie();
+  }
+
+  _initCookie() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString("JSESSION") != null) {
+      headers['cookie'] = prefs.getString("JSESSION")!;
+    }
+  }
+
+  Future<PostListModel> getPostList({
     required int page,
   }) async {
     var url = Uri.parse("$_domain/posts/?page=$page");
@@ -45,7 +57,7 @@ class ApiService {
     return postListModel;
   }
 
-  static writePost({required String description}) async {
+  writePost({required String description}) async {
     var url = Uri.parse("$_domain/post/write");
 
     var res = await http.post(
@@ -58,7 +70,7 @@ class ApiService {
     throw Exception(res.statusCode.toString());
   }
 
-  static loginPost({required String id, required String password}) async {
+  loginPost({required String id, required String password}) async {
     var url = Uri.parse("$_domain/login");
 
     var res = await http.post(
@@ -79,7 +91,7 @@ class ApiService {
     }
   }
 
-  static join({required JoinModel body}) async {
+  join({required JoinModel body}) async {
     var url = Uri.parse("$_domain/sign-up");
     var res = await http.post(
       url,
@@ -92,7 +104,7 @@ class ApiService {
     }
   }
 
-  static Future<List<SchoolListModel>> getSchoolList() async {
+  Future<List<SchoolListModel>> getSchoolList() async {
     List<SchoolListModel> schoolList = [];
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
@@ -105,7 +117,7 @@ class ApiService {
     return schoolList;
   }
 
-  static Future<bool> report(int postId, String reason) async {
+  Future<bool> report(int postId, String reason) async {
     var url = Uri.parse("$_domain/post/report/$postId");
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"reason": reason}));
@@ -115,7 +127,7 @@ class ApiService {
     return true;
   }
 
-  static Future<bool> convertLike(int postId) async {
+  Future<bool> convertLike(int postId) async {
     var url = Uri.parse("$_domain/post/like/add/$postId");
     var res = await http.post(url, headers: headers);
 
@@ -126,7 +138,7 @@ class ApiService {
     return true;
   }
 
-  static void _updateCookie(http.Response response) {
+  void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');

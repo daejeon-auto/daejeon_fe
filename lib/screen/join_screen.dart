@@ -55,7 +55,7 @@ class _JoinScreenState extends State<JoinScreen> {
     try {
       isLoading = true;
       setState(() {});
-      await ApiService.join(body: joinModel);
+      await ApiService().join(body: joinModel);
       Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     } on Exception catch (e) {
       isLoading = false;

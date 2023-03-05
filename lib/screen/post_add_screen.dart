@@ -26,7 +26,7 @@ class _PostAddScreenState extends State<PostAddScreen> {
       setState(() {
         isLoading = true;
       });
-      await ApiService.writePost(description: descController.text);
+      await ApiService().writePost(description: descController.text);
       // ignore: use_build_context_synchronously
       return Navigator.pop(context);
     } on Exception catch (e) {

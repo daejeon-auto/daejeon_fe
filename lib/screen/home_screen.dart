@@ -26,7 +26,7 @@ class _AppState extends State<App> {
 
   Future<PostListModel> getPostList(int page) async {
     try {
-      var postList = await ApiService.getPostList(page: page);
+      var postList = await ApiService().getPostList(page: page);
       return postList;
     } on Exception catch (e) {
       if (e.toString() == "Exception: 401") {

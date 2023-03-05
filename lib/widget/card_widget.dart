@@ -23,7 +23,7 @@ class _PostCardState extends State<PostCard> {
 
   void addReport(int postId, BuildContext context) async {
     try {
-      await ApiService.report(postId, reason.text);
+      await ApiService().report(postId, reason.text);
       isReported = !isReported;
       setState(() {});
     } on Exception catch (e) {
@@ -48,7 +48,7 @@ class _PostCardState extends State<PostCard> {
 
   void convertLike(int postId, BuildContext context) async {
     try {
-      await ApiService.convertLike(postId);
+      await ApiService().convertLike(postId);
       if (isLiked) {
         likedCount--;
       } else {

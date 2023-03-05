@@ -39,7 +39,7 @@ class _SelectSchoolDialogState extends State<SelectSchoolDialog> {
 
   void getSchoolList() async {
     try {
-      final schools = await ApiService.getSchoolList();
+      final schools = await ApiService().getSchoolList();
       _displaySchool = schools;
       setState(() => schoolList = schools);
     } catch (e) {

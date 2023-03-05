@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login() async {
     try {
-      await ApiService.loginPost(
+      await ApiService().loginPost(
         id: idController.text,
         password: passwordController.text,
       );
