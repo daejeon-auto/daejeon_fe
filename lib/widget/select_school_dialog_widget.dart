@@ -64,7 +64,7 @@ class _SelectSchoolDialogState extends State<SelectSchoolDialog> {
           SizedBox(
             height: 300,
             width: 400,
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: _displaySchool.length,
               itemBuilder: (context, idx) {
                 return ElevatedButton(
@@ -76,6 +76,10 @@ class _SelectSchoolDialogState extends State<SelectSchoolDialog> {
                   ),
                 );
               },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(
+                height: 20,
+              ),
             ),
           ),
           const SizedBox(
