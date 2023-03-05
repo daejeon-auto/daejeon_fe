@@ -101,10 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Container(
-                                    key: UniqueKey(),
-                                    child: const JoinScreen(),
-                                  ),
+                                  builder: (context) => const JoinScreen(),
                                 ),
                               ),
                               child: const Text("회원가입"),

@@ -14,6 +14,7 @@ void main() {
       "/login": (context) => const LoginScreen(),
       "/join": (context) => const JoinScreen(),
     },
+    debugShowCheckedModeBanner: false,
     home: const App(),
   ));
 }

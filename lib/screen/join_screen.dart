@@ -2,6 +2,7 @@ import 'package:daejeon_fe/model/common/auth_type.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:daejeon_fe/service/api_service.dart';
+import 'package:daejeon_fe/widget/select_school_dialog_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -24,13 +25,13 @@ class JoinScreen extends StatefulWidget {
 class _JoinScreenState extends State<JoinScreen> {
   bool isChecked = false;
   bool isSchoolSet = false, isLoading = false;
+  String searchSchool = "";
   SchoolListModel school = SchoolListModel(id: 0, name: "", locate: "");
+
   late JoinModel joinModel;
   late List<TextEditingController> controllerList = [];
   late TextEditingController invitedCode = TextEditingController();
   late TextEditingController inputSchoolName = TextEditingController();
-
-  late Future<List<SchoolListModel>> schoolList = ApiService.getSchoolList();
 
   @override
   void initState() {
@@ -38,7 +39,6 @@ class _JoinScreenState extends State<JoinScreen> {
     for (var i = 0; i < JoinScreen._inputList.length; i++) {
       controllerList.add(TextEditingController());
     }
-    setState(() {});
   }
 
   @override
@@ -127,48 +127,13 @@ class _JoinScreenState extends State<JoinScreen> {
                           TextButton(
                             onPressed: () {
                               showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text("학교 검색하기"),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        const TextField(),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        FutureBuilder(
-                                          future: schoolList,
-                                          builder: (context,
-                                              AsyncSnapshot<
-                                                      List<SchoolListModel>>
-                                                  snapshot) {
-                                            return Column(
-                                              children: [
-                                                if (snapshot.hasData)
-                                                  for (var school
-                                                      in snapshot.data!)
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          this.school = school;
-                                                          isSchoolSet = true;
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text(
-                                                        "${school.name} / ${school.locate}",
-                                                      ),
-                                                    )
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
+                                  context: context,
+                                  builder: (context) =>
+                                      const SelectSchoolDialog()).then((value) {
+                                school = value;
+                                isSchoolSet = true;
+                                setState(() {});
+                              });
                             },
                             child: isSchoolSet
                                 ? Text("${school.name} / ${school.locate}")
@@ -227,8 +192,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                                               .text,
                                                       stdNum: controllerList[5]
                                                           .text,
-                                                      code: controllerList[6]
-                                                          .text,
+                                                      code: invitedCode.text,
                                                       schoolId:
                                                           school.id.toString(),
                                                       authType: describeEnum(
