@@ -69,7 +69,9 @@ class ApiService {
     var res = await http.post(
       url,
       headers: headers,
-      body: jsonEncode({'description': description.trimLeft()}),
+      body: jsonEncode({
+        'description': description.trimLeft().replaceAll(RegExp('\\s+'), ' ')
+      }),
     );
 
     if (res.statusCode == 200) return;
