@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 import 'dart:io';
 
 import 'package:daejeon_fe/model/common/login_result_model.dart';
@@ -8,15 +7,11 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:localstorage/localstorage.dart';
-import 'package:sweet_cookie/sweet_cookie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  final LocalStorage storage = LocalStorage("JSESSION");
-
   // static const String _domain = "https://10.157.217.197";
   static const String _domain = "https://daejeon-be-production.up.railway.app";
   Cookie cookie = Cookie('JSESSIONID', '3712222644FB9ACF7E3DB7DD9659B6D0');
@@ -66,6 +61,9 @@ class ApiService {
   }
 
   writePost({required String description}) async {
+    if (description.trimRight().trimLeft().length < 15) {
+      throw Exception(400);
+    }
     var url = Uri.parse("$_domain/post/write");
 
     var res = await http.post(
@@ -159,13 +157,10 @@ class ApiService {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(rawCookie.split('=')[0], rawCookie.split('=')[1]);
-
-      SweetCookie.set(rawCookie.split('=')[0], rawCookie.split('=')[1]);
-      window.localStorage['JSESSION'] = rawCookie;
     }
   }
 
   String getCookie(String name) {
-    return SweetCookie.get(name) ?? "";
+    return "";
   }
 }
