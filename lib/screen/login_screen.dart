@@ -28,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     } on Exception catch (e) {
-      var msg = e.toString();
       if (e.toString() == "Exception: id or password not exist") {
         showDialog(
           context: context,

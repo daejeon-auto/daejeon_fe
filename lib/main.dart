@@ -9,14 +9,16 @@ import 'screen/home_screen.dart';
 void main() {
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(MaterialApp(
-    routes: {
-      "/login": (context) => const LoginScreen(),
-      "/join": (context) => const JoinScreen(),
-    },
-    debugShowCheckedModeBanner: false,
-    home: const App(),
-  ));
+  runApp(
+    MaterialApp(
+      routes: {
+        "/login": (context) => const LoginScreen(),
+        "/join": (context) => const JoinScreen(),
+      },
+      debugShowCheckedModeBanner: false,
+      home: const App(),
+    ),
+  );
 }
 
 class MyHttpOverrides extends HttpOverrides {

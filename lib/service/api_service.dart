@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:html';
+import 'dart:io';
 
 import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
@@ -6,16 +8,22 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
+import 'package:sweet_cookie/sweet_cookie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  // static const String _domain = "https://172.30.1.51";
+  final LocalStorage storage = LocalStorage("JSESSION");
+
+  // static const String _domain = "https://10.157.217.197";
   static const String _domain = "https://daejeon-be-production.up.railway.app";
-  static Map<String, String> headers = {
+  Cookie cookie = Cookie('JSESSIONID', '3712222644FB9ACF7E3DB7DD9659B6D0');
+  Map<String, String> headers = {
     "Content-Type": "application/json",
-    "withCredentials": "true"
+    'Accept': 'application/json',
+    HttpHeaders.cookieHeader: "JSESSIONID=3712222644FB9ACF7E3DB7DD9659B6D0"
   };
 
   ApiService() {
@@ -27,15 +35,15 @@ class ApiService {
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
+    headers['cookie'] = getCookie("JSESSION");
   }
 
-  Future<PostListModel> getPostList({
-    required int page,
-  }) async {
+  Future<PostListModel> getPostList({required int page}) async {
     var url = Uri.parse("$_domain/posts/?page=$page");
 
     var res = await http.post(url, headers: headers);
     if (res.statusCode != 200) throw Exception(res.statusCode);
+
     var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
     List<dynamic> postListDy = body['postList'];
     var postList = postListDy
@@ -70,25 +78,29 @@ class ApiService {
     throw Exception(res.statusCode.toString());
   }
 
-  loginPost({required String id, required String password}) async {
+  loginPost({
+    required String id,
+    required String password,
+  }) async {
     var url = Uri.parse("$_domain/login");
 
     var res = await http.post(
       url,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        "withCredentials": "true",
       },
       body: <String, String>{'loginId': id, 'password': password},
     );
 
-    _updateCookie(res);
-
     if (res.statusCode != 200) throw Error();
     var body = LoginResult.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+
     if (body.result == "fail") {
       throw Exception(body.message);
     }
+    await _updateCookie(res);
+
+    headers['cookie'] = getCookie("JSESSION");
   }
 
   join({required JoinModel body}) async {
@@ -109,8 +121,8 @@ class ApiService {
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
 
-    if (res.statusCode != 200) throw Exception(res.statusCode);
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+    if (res.statusCode != 200) throw Exception(res.statusCode);
     for (var school in result.data) {
       schoolList.add(SchoolListModel.fromJson(school));
     }
@@ -138,12 +150,22 @@ class ApiService {
     return true;
   }
 
-  void _updateCookie(http.Response response) {
+  Future<void> _updateCookie(http.Response response) async {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
       headers['cookie'] =
           (index == -1) ? rawCookie : rawCookie.substring(0, index);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(rawCookie.split('=')[0], rawCookie.split('=')[1]);
+
+      SweetCookie.set(rawCookie.split('=')[0], rawCookie.split('=')[1]);
+      window.localStorage['JSESSION'] = rawCookie;
     }
+  }
+
+  String getCookie(String name) {
+    return SweetCookie.get(name) ?? "";
   }
 }
