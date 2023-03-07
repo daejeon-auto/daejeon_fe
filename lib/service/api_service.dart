@@ -13,8 +13,8 @@ import '../model/post/post_model.dart';
 
 class ApiService {
   static final storage = LocalStorage("session");
-  // static const String _domain = "http://10.157.217.197";
-  static const String _domain = "https://daejeon-be-production.up.railway.app";
+  static const String _domain = "http://172.30.1.51";
+  // static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -30,7 +30,7 @@ class ApiService {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
 
-    headers['X-Auth-Token'] = getCookie('session');
+    headers['sessionid'] = getCookie("JSESSION");
   }
 
   Future<PostListModel> getPostList({required int page}) async {
@@ -86,7 +86,9 @@ class ApiService {
 
     var res = await http.post(
       url,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body: <String, String>{'loginId': id, 'password': password},
     );
 
@@ -97,12 +99,12 @@ class ApiService {
       throw Exception(body.message);
     }
     String? session = res.headers['sessionid'];
-    print(res.toString());
+    print(res.headers.toString());
     if (session != null) storage.setItem('session', session);
 
     await _updateCookie(res);
 
-    headers['X-Auth-Token'] = getCookie("JSESSION");
+    headers['sessionid'] = getCookie("JSESSION");
   }
 
   join({required JoinModel body}) async {
