@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
@@ -7,18 +6,18 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  // static const String _domain = "https://10.157.217.197";
+  static final storage = LocalStorage("session");
+  // static const String _domain = "http://10.157.217.197";
   static const String _domain = "https://daejeon-be-production.up.railway.app";
-  Cookie cookie = Cookie('JSESSIONID', '3712222644FB9ACF7E3DB7DD9659B6D0');
-  Map<String, String> headers = {
+  static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
-    HttpHeaders.cookieHeader: "JSESSIONID=3712222644FB9ACF7E3DB7DD9659B6D0"
   };
 
   ApiService() {
@@ -30,7 +29,8 @@ class ApiService {
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
-    headers['cookie'] = getCookie("JSESSION");
+
+    headers['X-Auth-Token'] = getCookie('session');
   }
 
   Future<PostListModel> getPostList({required int page}) async {
@@ -86,9 +86,7 @@ class ApiService {
 
     var res = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: <String, String>{'loginId': id, 'password': password},
     );
 
@@ -98,9 +96,13 @@ class ApiService {
     if (body.result == "fail") {
       throw Exception(body.message);
     }
+    String? session = res.headers['sessionid'];
+    print(res.toString());
+    if (session != null) storage.setItem('session', session);
+
     await _updateCookie(res);
 
-    headers['cookie'] = getCookie("JSESSION");
+    headers['X-Auth-Token'] = getCookie("JSESSION");
   }
 
   join({required JoinModel body}) async {
@@ -159,10 +161,11 @@ class ApiService {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(rawCookie.split('=')[0], rawCookie.split('=')[1]);
+      storage.setItem('session', rawCookie.split('=')[1]);
     }
   }
 
   String getCookie(String name) {
-    return "";
+    return storage.getItem('session') ?? "";
   }
 }
