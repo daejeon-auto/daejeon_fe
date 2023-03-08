@@ -25,8 +25,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.post_add_outlined,
                   size: 30,
@@ -50,8 +50,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.account_circle,
                   size: 30,
@@ -70,8 +70,8 @@ class NavMenu extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.logout,
                   size: 30,
