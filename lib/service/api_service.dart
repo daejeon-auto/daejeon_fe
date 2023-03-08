@@ -33,8 +33,7 @@ class ApiService {
 
     var token = await getToken();
 
-    headers['Authorization'] = "Bearer $token";
-    print("init $token");
+    headers['X-Auth-Token'] = "Bearer $token";
   }
 
   Future<PostListModel> getPostList({required int page}) async {
