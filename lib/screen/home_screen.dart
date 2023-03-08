@@ -1,9 +1,8 @@
 import 'package:daejeon_fe/model/post/post_list_model.dart';
+import 'package:daejeon_fe/screen/NavBar.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
-
-import 'post_add_screen.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -57,6 +56,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 244, 247, 255),
+      endDrawer: const NavMenu(),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,18 +72,6 @@ class _AppState extends State<App> {
                     "assets/logo.png",
                   )),
             ),
-            GestureDetector(
-              child: const Icon(
-                Icons.post_add_outlined,
-                size: 30,
-              ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PostAddScreen(),
-                ),
-              ),
-            )
           ],
         ),
       ),

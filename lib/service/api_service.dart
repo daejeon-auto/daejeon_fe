@@ -169,6 +169,10 @@ class ApiService {
     }
   }
 
+  Future<void> logout() async {
+    await http.post(Uri.parse("$_domain/logout"), headers: headers);
+  }
+
   String getCookie() {
     return "";
   }
