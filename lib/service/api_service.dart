@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
@@ -7,12 +6,15 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  // static const String _domain = "http://10.157.217.197";
+  static final storage = LocalStorage("auth");
+
+  // static const String _domain = "https://172.30.1.51";
   static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
@@ -28,6 +30,11 @@ class ApiService {
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
+
+    var token = await getToken();
+
+    headers['Authorization'] = "Bearer $token";
+    print("init $token");
   }
 
   Future<PostListModel> getPostList({required int page}) async {
@@ -85,8 +92,6 @@ class ApiService {
     var res = await http.post(
       url,
       headers: {
-        HttpHeaders.accessControlAllowCredentialsHeader: "true",
-        "withCredentials": "true",
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: <String, String>{'loginId': id, 'password': password},
@@ -100,8 +105,7 @@ class ApiService {
     }
 
     await _updateCookie(res);
-
-    headers['sessionid'] = getCookie();
+    await _updateToken(res);
   }
 
   join({required JoinModel body}) async {
@@ -173,7 +177,18 @@ class ApiService {
     await http.post(Uri.parse("$_domain/logout"), headers: headers);
   }
 
-  String getCookie() {
-    return "";
+  Future<void> _updateToken(http.Response res) async {
+    String? rawToken = res.headers['x-auth-token'];
+
+    await storage.ready;
+
+    if (rawToken != null) {
+      storage.setItem('token', rawToken);
+    }
+  }
+
+  Future<String> getToken() async {
+    await storage.ready;
+    return storage.getItem('token') ?? "";
   }
 }
