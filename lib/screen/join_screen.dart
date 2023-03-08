@@ -69,6 +69,31 @@ class _JoinScreenState extends State<JoinScreen> {
           ),
         );
       }
+
+      var content = "알 수 없는 에러 발생";
+
+      if (e.toString() == "Exception: idLen") {
+        content = "아이디는 5자리 이상이어야 합니다.";
+      }
+      if (e.toString() == "Exception: passwordLen") {
+        content = "비밀번호는 8자리 이상이어야 합니다.";
+      }
+      if (e.toString() == "Exception: phoneNumberLen") {
+        content = "전화번호는 11자리 이하이어야 합니다.";
+      }
+      if (e.toString() == "Exception: birthDayLen") {
+        content = "생일은 8자리여야 합니다.";
+      }
+      if (e.toString() == "Exception: stdNumLen") {
+        content = "학번은 4자리 이상이어야 합니다.";
+      }
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("회원가입중 에러 발생"),
+          content: Text(content),
+        ),
+      );
     }
   }
 

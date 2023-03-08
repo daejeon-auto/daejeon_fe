@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
@@ -6,15 +7,13 @@ import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static final storage = LocalStorage("session");
-  static const String _domain = "http://172.30.1.51";
-  // static const String _domain = "https://daejeon-be-production.up.railway.app";
+  // static const String _domain = "http://10.157.217.197";
+  static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -29,14 +28,13 @@ class ApiService {
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
-
-    headers['sessionid'] = getCookie("JSESSION");
   }
 
   Future<PostListModel> getPostList({required int page}) async {
     var url = Uri.parse("$_domain/posts/?page=$page");
 
     var res = await http.post(url, headers: headers);
+
     if (res.statusCode != 200) throw Exception(res.statusCode);
 
     var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
@@ -87,6 +85,8 @@ class ApiService {
     var res = await http.post(
       url,
       headers: {
+        HttpHeaders.accessControlAllowCredentialsHeader: "true",
+        "withCredentials": "true",
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: <String, String>{'loginId': id, 'password': password},
@@ -98,16 +98,19 @@ class ApiService {
     if (body.result == "fail") {
       throw Exception(body.message);
     }
-    String? session = res.headers['sessionid'];
-    print(res.headers.toString());
-    if (session != null) storage.setItem('session', session);
 
     await _updateCookie(res);
 
-    headers['sessionid'] = getCookie("JSESSION");
+    headers['sessionid'] = getCookie();
   }
 
   join({required JoinModel body}) async {
+    if (body.id.length < 5) throw Exception("idLen");
+    if (body.password.length < 8) throw Exception("passwordLen");
+    if (body.phoneNumber.length > 11) throw Exception("phoneNumberLen");
+    if (body.birthday.length != 8) throw Exception("birthDayLen");
+    if (body.stdNum.length < 4) throw Exception("stdNumLen");
+
     var url = Uri.parse("$_domain/sign-up");
     var res = await http.post(
       url,
@@ -163,11 +166,10 @@ class ApiService {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(rawCookie.split('=')[0], rawCookie.split('=')[1]);
-      storage.setItem('session', rawCookie.split('=')[1]);
     }
   }
 
-  String getCookie(String name) {
-    return storage.getItem('session') ?? "";
+  String getCookie() {
+    return "";
   }
 }
