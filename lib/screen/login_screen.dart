@@ -28,21 +28,29 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     } on Exception catch (e) {
+      var content = "";
       if (e.toString() == "Exception: id or password not exist") {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: const Text("로그인 문제"),
-            content: const Text("아이디 혹은 비밀번호를 재확인 해주십시오."),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text("확인"),
-              ),
-            ],
-          ),
-        );
+        content = "아이디 혹은 비밀번호를 재확인 해주십시오.";
       }
+      if (e.toString() == "Exception: account is pending") {
+        content = "계정이 승인 대기 상태입니다.\n해당 학교에서 제공하는 본인인증 방식으로 인증해주십시오.";
+      }
+      if (e.toString() == "Exception: account is disabled") {
+        content = "계정이 정지당했습니다.";
+      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text("로그인 문제"),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("확인"),
+            ),
+          ],
+        ),
+      );
     }
   }
 
