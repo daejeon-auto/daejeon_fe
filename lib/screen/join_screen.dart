@@ -6,6 +6,7 @@ import 'package:daejeon_fe/widget/select_school_dialog_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
@@ -49,6 +50,29 @@ class _JoinScreenState extends State<JoinScreen> {
 
     invitedCode.dispose();
     super.dispose();
+  }
+
+  Future<void> txtFile(BuildContext context) async {
+    String agree = await rootBundle.loadString('assets/agree.txt');
+
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('개인정보 이용약관'),
+          content: SingleChildScrollView(child: Text(agree)),
+          actions: [
+            ElevatedButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void join() async {
@@ -181,6 +205,18 @@ class _JoinScreenState extends State<JoinScreen> {
                               ),
                               const Text("추천 코드 사용"),
                             ],
+                          ),
+                          TextButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            child: const Text(
+                              '개인정보이용약관 확인',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              txtFile(context);
+                            },
                           ),
                           isLoading
                               ? LoadingAnimationWidget.staggeredDotsWave(
