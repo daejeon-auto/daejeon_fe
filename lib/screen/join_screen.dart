@@ -173,24 +173,49 @@ class _JoinScreenState extends State<JoinScreen> {
                                     hintText: JoinScreen._inputList[i]),
                               ),
                             ),
-                          TextButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      const SelectSchoolDialog()).then(
-                                (value) {
-                                  if (value != null) {
-                                    school = value;
-                                    isSchoolSet = true;
-                                    setState(() {});
-                                  }
+                          Column(
+                            children: [
+                              TextButton(
+                                style: ButtonStyle(
+                                  minimumSize: MaterialStateProperty.all(
+                                    const Size(50, 25),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          const SelectSchoolDialog()).then(
+                                    (value) {
+                                      if (value != null) {
+                                        school = value;
+                                        isSchoolSet = true;
+                                        setState(() {});
+                                      }
+                                    },
+                                  );
                                 },
-                              );
-                            },
-                            child: isSchoolSet
-                                ? Text("${school.name} / ${school.locate}")
-                                : const Text("학교 검색하기"),
+                                child: isSchoolSet
+                                    ? Text("${school.name} / ${school.locate}")
+                                    : const Text("학교 검색하기"),
+                              ),
+                              TextButton(
+                                style: ButtonStyle(
+                                  minimumSize: MaterialStateProperty.all(
+                                    const Size(50, 25),
+                                  ),
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                ),
+                                child: const Text(
+                                  '개인정보이용약관 확인',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                onPressed: () {
+                                  txtFile(context);
+                                },
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 10,
@@ -205,18 +230,6 @@ class _JoinScreenState extends State<JoinScreen> {
                               ),
                               const Text("추천 코드 사용"),
                             ],
-                          ),
-                          TextButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                            ),
-                            child: const Text(
-                              '개인정보이용약관 확인',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            onPressed: () {
-                              txtFile(context);
-                            },
                           ),
                           isLoading
                               ? LoadingAnimationWidget.staggeredDotsWave(
