@@ -154,11 +154,15 @@ class _JoinScreenState extends State<JoinScreen> {
                               showDialog(
                                   context: context,
                                   builder: (context) =>
-                                      const SelectSchoolDialog()).then((value) {
-                                school = value;
-                                isSchoolSet = true;
-                                setState(() {});
-                              });
+                                      const SelectSchoolDialog()).then(
+                                (value) {
+                                  if (value != null) {
+                                    school = value;
+                                    isSchoolSet = true;
+                                    setState(() {});
+                                  }
+                                },
+                              );
                             },
                             child: isSchoolSet
                                 ? Text("${school.name} / ${school.locate}")
