@@ -14,8 +14,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  // static const String _domain = "https://172.30.1.51";
-  static const String _domain = "https://daejeon-be-production.up.railway.app";
+  static const String _domain = "http://10.157.217.197";
+  // static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -26,14 +26,14 @@ class ApiService {
   }
 
   _initCookie() async {
+    var token = getToken();
+
+    headers['X-Auth-Token'] = token;
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
-
-    var token = await getToken();
-
-    headers['X-Auth-Token'] = "Bearer $token";
   }
 
   Future<PostListModel> getPostList({required int page}) async {
@@ -186,8 +186,7 @@ class ApiService {
     }
   }
 
-  Future<String> getToken() async {
-    await storage.ready;
+  String getToken() {
     return storage.getItem('token') ?? "";
   }
 }
