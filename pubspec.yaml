@@ -38,6 +38,7 @@ dependencies:
   shared_preferences: ^2.0.18
   localstorage: ^4.0.1+2
   flutter_html: ^2.2.1
+  sticky_footer_scrollview: ^1.1.1
 
 dev_dependencies:
   flutter_test:

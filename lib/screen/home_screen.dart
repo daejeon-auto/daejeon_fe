@@ -1,9 +1,11 @@
 import 'package:daejeon_fe/model/post/post_list_model.dart';
+import 'package:daejeon_fe/model/post/post_model.dart';
 import 'package:daejeon_fe/screen/NavBar.dart';
 import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:sticky_footer_scrollview/sticky_footer_scrollview.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -14,13 +16,14 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int page = 0;
-  late Future<PostListModel> postList;
+  List<PostModel> postList = [];
+  late Future<PostListModel> newPostList;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
-    setState(() {
-      postList = getPostList(page);
-    });
+    newPostList = getPostList(page);
+    setState(() {});
     super.initState();
   }
 
@@ -106,56 +109,98 @@ class _AppState extends State<App> {
                         (_) => false);
                     setState(() {});
                   },
-                  child: FutureBuilder(
-                    future: postList,
-                    builder: (
-                      context,
-                      AsyncSnapshot<PostListModel> snapshot,
-                    ) {
-                      var text = "";
-                      if (!snapshot.hasData) {
-                        text = "글을 가져오는중 오류 발생";
-                      } else if (snapshot.data!.postList.isEmpty) {
-                        text = '게시글이 없습니다';
-                      }
-                      if (!snapshot.hasData ||
-                          snapshot.data!.postList.isEmpty) {
-                        return LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: SizedBox(
+                  child: Column(
+                    children: [
+                      FutureBuilder(
+                        future: newPostList,
+                        builder: (
+                          context,
+                          AsyncSnapshot<PostListModel> snapshot,
+                        ) {
+                          var text = "";
+                          if (!snapshot.hasData) {
+                            text = "글을 가져오는중 오류 발생";
+                          } else if (snapshot.data!.postList.isEmpty) {
+                            text = '게시글이 없습니다';
+                          }
+                          if (!snapshot.hasData ||
+                              snapshot.data!.postList.isEmpty) {
+                            return LayoutBuilder(
+                              builder: (context, constraints) {
+                                return SingleChildScrollView(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.height -
+                                        110,
+                                    width:
+                                        MediaQuery.of(context).size.width - 20,
+                                    child: Center(
+                                      child: Text(text),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          postList.addAll(snapshot.data!.postList);
+                          if (snapshot.data!.totalPage > page) {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height - 110,
+                                  width: MediaQuery.of(context).size.width - 20,
+                                  child: StickyFooterScrollView(
+                                    itemCount: postList.length,
+                                    itemBuilder: (context, index) {
+                                      return PostCard(
+                                        post: postList[index],
+                                      );
+                                    },
+                                    footer: Transform.translate(
+                                      offset: const Offset(-10, -10),
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                10,
+                                        height: 50,
+                                        child: TextButton(
+                                          style: const ButtonStyle(),
+                                          onPressed: () {
+                                            page++;
+                                            newPostList = getPostList(page);
+                                            setState(() {});
+                                          },
+                                          child: const Text("더보기"),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Column(
+                            children: [
+                              SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height - 110,
                                 width: MediaQuery.of(context).size.width - 20,
-                                child: Center(
-                                  child: Text(text),
+                                child: ListView.builder(
+                                  itemCount: postList.length,
+                                  itemBuilder: (context, index) {
+                                    return PostCard(
+                                      post: postList[index],
+                                    );
+                                  },
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      }
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height - 110,
-                        width: MediaQuery.of(context).size.width - 20,
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.postList.length,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          itemBuilder: (context, index) {
-                            return PostCard(
-                              post: snapshot.data!.postList[index],
-                            );
-                          },
-                          separatorBuilder: (
-                            BuildContext context,
-                            int index,
-                          ) =>
-                              const SizedBox(width: 40),
-                        ),
-                      );
-                    },
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
