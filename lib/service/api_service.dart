@@ -14,29 +14,31 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  // static const String _domain = "https://172.30.1.51";
+  // static const String _domain = "http://10.157.217.197";
   static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
   };
 
-  ApiService() {
-    _initCookie();
-  }
+  ApiService();
 
   _initCookie() async {
+    await storage.ready;
+
+    var token = getToken();
+
+    headers['X-Auth-Token'] = token;
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString("JSESSION") != null) {
       headers['cookie'] = prefs.getString("JSESSION")!;
     }
-
-    var token = await getToken();
-
-    headers['X-Auth-Token'] = "Bearer $token";
   }
 
   Future<PostListModel> getPostList({required int page}) async {
+    await _initCookie();
+
     var url = Uri.parse("$_domain/posts/?page=$page");
 
     var res = await http.post(url, headers: headers);
@@ -65,6 +67,8 @@ class ApiService {
   }
 
   writePost({required String description}) async {
+    await _initCookie();
+
     if (description.trimRight().trimLeft().length < 15) {
       throw Exception(400);
     }
@@ -108,6 +112,8 @@ class ApiService {
   }
 
   join({required JoinModel body}) async {
+    await _initCookie();
+
     if (body.id.length < 5) throw Exception("idLen");
     if (body.password.length < 8) throw Exception("passwordLen");
     if (body.phoneNumber.length > 11) throw Exception("phoneNumberLen");
@@ -127,6 +133,8 @@ class ApiService {
   }
 
   Future<List<SchoolListModel>> getSchoolList() async {
+    await _initCookie();
+
     List<SchoolListModel> schoolList = [];
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
@@ -140,6 +148,8 @@ class ApiService {
   }
 
   Future<bool> report(int postId, String reason) async {
+    await _initCookie();
+
     var url = Uri.parse("$_domain/post/report/$postId");
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"reason": reason}));
@@ -150,6 +160,8 @@ class ApiService {
   }
 
   Future<bool> convertLike(int postId) async {
+    await _initCookie();
+
     var url = Uri.parse("$_domain/post/like/add/$postId");
     var res = await http.post(url, headers: headers);
 
@@ -173,7 +185,9 @@ class ApiService {
   }
 
   Future<void> logout() async {
+    await _initCookie();
     await http.post(Uri.parse("$_domain/logout"), headers: headers);
+    storage.deleteItem('token');
   }
 
   Future<void> _updateToken(http.Response res) async {
@@ -186,8 +200,7 @@ class ApiService {
     }
   }
 
-  Future<String> getToken() async {
-    await storage.ready;
+  String getToken() {
     return storage.getItem('token') ?? "";
   }
 }
