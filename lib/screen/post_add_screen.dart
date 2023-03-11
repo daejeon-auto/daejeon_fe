@@ -1,6 +1,7 @@
 import 'package:daejeon_fe/screen/login_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class PostAddScreen extends StatefulWidget {
@@ -26,9 +27,32 @@ class _PostAddScreenState extends State<PostAddScreen> {
       setState(() {
         isLoading = true;
       });
+
+      showDialog(
+        context: context,
+        builder: (ctx) => Scaffold(
+          appBar: AppBar(),
+          body: SingleChildScrollView(
+            child: Html(
+              data: '''<!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta name="viewport" content="width=device-width, initial-scale=1">
+                    </head>
+                    <body>
+                      <div>
+                      <iframe src="https://adpick.co.kr/nativeAD/ad.php?bannerType=type6&limit=2&affid=6d8b4b&frameId=AdpickAdFrame_2023311%40212119&popup=false" width="100%" frameborder="0" scrolling="no" data-adpick_nativeAD id="AdpickAdFrame_2023311@212119"></iframe><script src="https://adpick.co.kr/nativeAD/script.js" async="true"></script>
+                      </div>
+                    </body>
+                    </html>
+                  ''',
+            ),
+          ),
+        ),
+      );
       await ApiService().writePost(description: descController.text);
       // ignore: use_build_context_synchronously
-      return Navigator.pop(context);
+      Navigator.pop(context);
     } on Exception catch (e) {
       isLoading = false;
       if (e.toString() == "Exception: 400") {
