@@ -52,7 +52,7 @@ class _PostAddScreenState extends State<PostAddScreen> {
       );
       await ApiService().writePost(description: descController.text);
       // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+      Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     } on Exception catch (e) {
       isLoading = false;
       if (e.toString() == "Exception: 400") {
