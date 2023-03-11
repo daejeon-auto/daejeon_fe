@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/post/post_model.dart';
 import 'package:daejeon_fe/screen/NavBar.dart';
@@ -17,14 +19,21 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   int page = 0;
   List<PostModel> postList = [];
-  late Future<PostListModel> newPostList;
+  late Stream<PostListModel?> newPostList;
   final scrollController = ScrollController();
+  final postListStreamController = StreamController<PostListModel?>();
 
   @override
   void initState() {
-    newPostList = getPostList(page);
-    setState(() {});
+    newPostList = postListStreamController.stream;
+    getPostList(page).then((value) => postListStreamController.add(value));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    postListStreamController.close();
+    super.dispose();
   }
 
   Future<PostListModel> getPostList(int page) async {
@@ -111,20 +120,12 @@ class _AppState extends State<App> {
                   },
                   child: Column(
                     children: [
-                      FutureBuilder(
-                        future: newPostList,
-                        builder: (
-                          context,
-                          AsyncSnapshot<PostListModel> snapshot,
-                        ) {
-                          var text = "";
-                          if (!snapshot.hasData) {
-                            text = "글을 가져오는중 오류 발생";
-                          } else if (snapshot.data!.postList.isEmpty) {
-                            text = '게시글이 없습니다';
-                          }
+                      StreamBuilder<PostListModel?>(
+                        stream: newPostList,
+                        builder: (context, snapshot) {
                           if (!snapshot.hasData ||
-                              snapshot.data!.postList.isEmpty) {
+                              snapshot.data!.postList.isEmpty ||
+                              snapshot.hasError) {
                             return LayoutBuilder(
                               builder: (context, constraints) {
                                 return SingleChildScrollView(
@@ -136,7 +137,9 @@ class _AppState extends State<App> {
                                     width:
                                         MediaQuery.of(context).size.width - 20,
                                     child: Center(
-                                      child: Text(text),
+                                      child: snapshot.hasError
+                                          ? const Text('게시글을 가져오는 동안 에러 발생')
+                                          : const Text('게시글이 없습니다'),
                                     ),
                                   ),
                                 );
@@ -144,56 +147,43 @@ class _AppState extends State<App> {
                             );
                           }
                           postList.addAll(snapshot.data!.postList);
-                          if (snapshot.data!.totalPage > page) {
-                            return Column(
-                              children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height - 110,
-                                  width: MediaQuery.of(context).size.width - 20,
-                                  child: StickyFooterScrollView(
-                                    itemCount: postList.length,
-                                    itemBuilder: (context, index) {
-                                      return PostCard(
-                                        post: postList[index],
-                                      );
-                                    },
-                                    footer: Transform.translate(
-                                      offset: const Offset(-10, -10),
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                10,
-                                        height: 50,
-                                        child: TextButton(
-                                          style: const ButtonStyle(),
-                                          onPressed: () {
-                                            page++;
-                                            newPostList = getPostList(page);
-                                            setState(() {});
-                                          },
-                                          child: const Text("더보기"),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
                           return Column(
                             children: [
                               SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height - 110,
                                 width: MediaQuery.of(context).size.width - 20,
-                                child: ListView.builder(
+                                child: StickyFooterScrollView(
+                                  scrollController: scrollController,
                                   itemCount: postList.length,
                                   itemBuilder: (context, index) {
                                     return PostCard(
                                       post: postList[index],
                                     );
                                   },
+                                  footer: snapshot.data!.totalPage - 1 == page
+                                      ? const SizedBox()
+                                      : Transform.translate(
+                                          offset: const Offset(-10, -10),
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                10,
+                                            height: 50,
+                                            child: TextButton(
+                                              style: const ButtonStyle(),
+                                              onPressed: () {
+                                                page++;
+                                                getPostList(page).then(
+                                                    (value) =>
+                                                        postListStreamController
+                                                            .add(value));
+                                              },
+                                              child: const Text('더보기'),
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               ),
                             ],
