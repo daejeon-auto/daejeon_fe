@@ -1,5 +1,6 @@
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/screen/NavBar.dart';
+import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,15 @@ class _AppState extends State<App> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PostAddScreen(),
+          ),
+        ),
+        child: const Icon(Icons.add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
