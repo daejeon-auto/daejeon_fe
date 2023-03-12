@@ -1,10 +1,9 @@
 import 'package:daejeon_fe/screen/login_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
-import 'package:daejeon_fe/widget/adScreen.dart';
+import 'package:daejeon_fe/widget/ad_screen_of_w.dart';
+import 'package:daejeon_fe/widget/ad_screen_of_m.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import 'package:flutter/foundation.dart';
 
 class PostAddScreen extends StatefulWidget {
@@ -15,31 +14,10 @@ class PostAddScreen extends StatefulWidget {
 }
 
 class _PostAddScreenState extends State<PostAddScreen> {
-  late final PlatformWebViewController _controller;
-  WebViewController? _webViewController;
-
   final descController = TextEditingController();
   var time = 10;
-  bool isLoading = false, _buttonEnabled = false;
+  bool isLoading = false;
   String errorMsg = "";
-
-  @override
-  void initState() {
-    if (kIsWeb) {
-      _controller = PlatformWebViewController(
-        const PlatformWebViewControllerCreationParams(),
-      )..loadRequest(
-          LoadRequestParams(
-            uri: Uri.parse('https://daejeon.inab-devs.repl.co'),
-          ),
-        );
-    } else {
-      _webViewController = WebViewController()
-        ..loadRequest(Uri.parse('https://daejeon.inab-devs.repl.co'))
-        ..setJavaScriptMode(JavaScriptMode.unrestricted);
-    }
-    super.initState();
-  }
 
   @override
   void dispose() {
