@@ -67,7 +67,9 @@ class NavMenu extends StatelessWidget {
                 ),
               ],
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, "/my-page");
+            },
           ),
           ListTile(
             title: Row(
