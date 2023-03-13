@@ -84,17 +84,15 @@ class _JoinScreenState extends State<JoinScreen> {
     } on Exception catch (e) {
       isLoading = false;
       setState(() {});
-      if (e.toString() == "Exception: 400") {
-        showDialog(
-          context: context,
-          builder: (ctx) => const AlertDialog(
-            title: Text("회원가입중 에러 발생"),
-            content: Text("회원가입 정보를 다시한번 확인 해주세요."),
-          ),
-        );
-      }
 
       var content = "알 수 없는 에러 발생";
+      if (e.toString() == "Exception: 404") {
+        content = "힉교를 찾지 못했습니다";
+      }
+
+      if (e.toString() == "Exception: 409") {
+        content = "이미 등록된 아이디입니다.";
+      }
 
       if (e.toString() == "Exception: idLen") {
         content = "아이디는 5자리 이상이어야 합니다.";
