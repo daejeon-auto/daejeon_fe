@@ -1,10 +1,7 @@
 import 'package:daejeon_fe/screen/login_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
-import 'package:daejeon_fe/widget/ad_screen_of_w.dart';
-import 'package:daejeon_fe/widget/ad_screen_of_m.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:flutter/foundation.dart';
 
 class PostAddScreen extends StatefulWidget {
   const PostAddScreen({Key? key}) : super(key: key);
@@ -31,17 +28,17 @@ class _PostAddScreenState extends State<PostAddScreen> {
         isLoading = true;
       });
 
-      if (kIsWeb) {
-        showDialog(
-          context: context,
-          builder: (ctx) => const AdScreenOfW(),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (ctx) => const AdScreenOfM(),
-        );
-      }
+      // if (kIsWeb) {
+      //   showDialog(
+      //     context: context,
+      //     builder: (ctx) => const AdScreenOfW(),
+      //   );
+      // } else {
+      //   showDialog(
+      //     context: context,
+      //     builder: (ctx) => const AdScreenOfM(),
+      //   );
+      // }
       await ApiService().writePost(description: descController.text);
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
