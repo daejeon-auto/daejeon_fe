@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final idController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isAutoLogin = false;
 
   @override
   void dispose() {
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await ApiService().loginPost(
         id: idController.text,
         password: passwordController.text,
+        rememberMe: isAutoLogin,
       );
       Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     } on Exception catch (e) {
@@ -97,6 +99,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: "password",
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: isAutoLogin,
+                              onChanged: (val) => setState(() {
+                                isAutoLogin = val!;
+                              }),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            const Text(
+                              "자동 로그인",
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 20,

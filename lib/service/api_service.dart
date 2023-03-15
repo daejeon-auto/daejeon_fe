@@ -16,8 +16,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  static const String _domain = "http://10.157.217.197";
-  // static const String _domain = "https://daejeon-be-production.up.railway.app";
+  // static const String _domain = "http://10.157.217.197";
+  static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -91,6 +91,7 @@ class ApiService {
   loginPost({
     required String id,
     required String password,
+    required bool rememberMe,
   }) async {
     var url = Uri.parse("$_domain/login");
 
@@ -99,7 +100,11 @@ class ApiService {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: <String, String>{'loginId': id, 'password': password},
+      body: {
+        'loginId': id,
+        'password': password,
+        'rememberMe': rememberMe,
+      },
     );
 
     if (res.statusCode != 200) throw Error();
