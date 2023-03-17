@@ -17,9 +17,6 @@ class _AdScreenOfMState extends State<AdScreenOfM> {
 
   @override
   void initState() {
-    _webViewController = WebViewController()
-      ..loadRequest(Uri.parse('https://daejeon.inab-devs.repl.co'))
-      ..setJavaScriptMode(JavaScriptMode.unrestricted);
     super.initState();
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -41,8 +38,9 @@ class _AdScreenOfMState extends State<AdScreenOfM> {
         automaticallyImplyLeading: false,
         title: Text("$time초 후 닫힘"),
       ),
-      body: WebViewWidget(
-        controller: _webViewController!,
+      body: const WebView(
+        initialUrl: 'https://daejeon.inab-devs.repl.co',
+        javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
+import 'package:webviewx/webviewx.dart';
 
 class AdScreenOfW extends StatefulWidget {
   const AdScreenOfW({super.key});
@@ -11,18 +11,10 @@ class AdScreenOfW extends StatefulWidget {
 }
 
 class _AdScreenOfWState extends State<AdScreenOfW> {
-  late final PlatformWebViewController _controller;
   int time = 10;
 
   @override
   void initState() {
-    _controller = PlatformWebViewController(
-      const PlatformWebViewControllerCreationParams(),
-    )..loadRequest(
-        LoadRequestParams(
-          uri: Uri.parse('https://daejeon.inab-devs.repl.co'),
-        ),
-      );
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (time <= 0) {
         timer.cancel();
@@ -43,9 +35,13 @@ class _AdScreenOfWState extends State<AdScreenOfW> {
         automaticallyImplyLeading: false,
         title: Text("$time초후 닫힘"),
       ),
-      body: PlatformWebViewWidget(
-        PlatformWebViewWidgetCreationParams(controller: _controller),
-      ).build(context),
+      body: WebViewX(
+        initialContent: 'https://daejeon.inab-devs.repl.co',
+        initialSourceType: SourceType.url,
+        javascriptMode: JavascriptMode.unrestricted,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+      ),
     );
   }
 }
