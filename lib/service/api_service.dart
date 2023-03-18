@@ -103,7 +103,7 @@ class ApiService {
       body: {
         'loginId': id,
         'password': password,
-        'rememberMe': rememberMe,
+        'rememberMe': rememberMe.toString(),
       },
     );
 
