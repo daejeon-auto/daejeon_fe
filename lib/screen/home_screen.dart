@@ -48,7 +48,7 @@ class _AppState extends State<App> {
                           ),
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
-                            fontSize: 30,
+                            fontSize: 40.0,
                           ),
                           controller: searchSchoolController,
                         ),
