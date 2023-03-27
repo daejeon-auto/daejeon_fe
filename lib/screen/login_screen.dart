@@ -1,6 +1,7 @@
 import 'package:daejeon_fe/screen/join_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -82,6 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Flexible(
                           child: TextField(
                             controller: idController,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'[:]'))
+                            ],
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(
                               hintText: "id",

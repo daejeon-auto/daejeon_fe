@@ -6,7 +6,8 @@ import 'package:daejeon_fe/widget/select_school_dialog_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart'
+    show FilteringTextInputFormatter, rootBundle;
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
@@ -167,6 +168,10 @@ class _JoinScreenState extends State<JoinScreen> {
                             Expanded(
                               child: TextField(
                                 controller: controllerList[i],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'[:]'))
+                                ],
                                 decoration: InputDecoration(
                                     hintText: JoinScreen._inputList[i]),
                               ),
