@@ -1,11 +1,10 @@
 import 'dart:io';
 
+import 'package:daejeon_fe/screen/home_screen.dart';
 import 'package:daejeon_fe/screen/join_screen.dart';
 import 'package:daejeon_fe/screen/login_screen.dart';
 import 'package:daejeon_fe/screen/my_page_screen.dart';
 import 'package:flutter/material.dart';
-
-import 'screen/home_screen.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -17,6 +16,7 @@ void main() {
         "/join": (context) => const JoinScreen(),
         "/my-page": (context) => const MyPageScreen(),
       },
+      theme: ThemeData(fontFamily: "NotoSans"),
       debugShowCheckedModeBanner: false,
       home: const App(),
     ),

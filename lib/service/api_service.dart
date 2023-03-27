@@ -16,8 +16,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  // static const String _domain = "http://10.157.217.197";
-  static const String _domain = "https://daejeon-be-production.up.railway.app";
+  static const String _domain = "http://192.168.18.89";
+  // static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -38,12 +38,13 @@ class ApiService {
     }
   }
 
-  Future<PostListModel> getPostList({required int page}) async {
+  Future<PostListModel> getPostList(
+      {required int page, required int schoolId}) async {
     await _initCookie();
 
-    var url = Uri.parse("$_domain/posts/?page=$page");
+    var url = Uri.parse("$_domain/posts/?page=$page&schoolId=$schoolId");
 
-    var res = await http.post(url, headers: headers);
+    var res = await http.get(url, headers: headers);
 
     if (res.statusCode != 200) throw Exception(res.statusCode);
 
