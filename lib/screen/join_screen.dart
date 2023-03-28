@@ -14,10 +14,7 @@ class JoinScreen extends StatefulWidget {
   static const List<String> _inputList = [
     "아이디",
     "비밀번호",
-    "이름",
-    "생년월일 ex) 20050101",
     "전화번호 ex) 01012341234",
-    "학번"
   ];
 
   @override
@@ -31,24 +28,28 @@ class _JoinScreenState extends State<JoinScreen> {
   SchoolListModel school = SchoolListModel(id: 0, name: "", locate: "");
 
   late JoinModel joinModel;
-  late List<TextEditingController> controllerList = [];
+
+  // 선택사항
   late TextEditingController invitedCode = TextEditingController();
+
+  // 필수 기입 정보 컨트롤러
   late TextEditingController inputSchoolName = TextEditingController();
+  late TextEditingController idController = TextEditingController();
+  late TextEditingController passwordController = TextEditingController();
+  late TextEditingController phoneNumberController = TextEditingController();
+
+  // 인증 코드 확인
+  late TextEditingController chkCodeController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    for (var i = 0; i < JoinScreen._inputList.length; i++) {
-      controllerList.add(TextEditingController());
-    }
   }
 
   @override
   void dispose() {
-    for (var i = 0; i < controllerList.length; i++) {
-      controllerList[i].dispose();
-    }
-
     invitedCode.dispose();
     super.dispose();
   }
@@ -104,12 +105,7 @@ class _JoinScreenState extends State<JoinScreen> {
       if (e.toString() == "Exception: phoneNumberLen") {
         content = "전화번호는 11자리 이하이어야 합니다.";
       }
-      if (e.toString() == "Exception: birthDayLen") {
-        content = "생일은 8자리여야 합니다.";
-      }
-      if (e.toString() == "Exception: stdNumLen") {
-        content = "학번은 4자리 이상이어야 합니다.";
-      }
+
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -164,25 +160,123 @@ class _JoinScreenState extends State<JoinScreen> {
                               height: 130,
                             ),
                           ),
-                          for (var i = 0; i < JoinScreen._inputList.length; i++)
-                            Expanded(
-                              child: TextField(
-                                controller: controllerList[i],
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.deny(
-                                      RegExp(r'[:]'))
-                                ],
-                                decoration: InputDecoration(
-                                    hintText: JoinScreen._inputList[i]),
-                              ),
+                          Form(
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: idController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp(r'[:]'))
+                                  ],
+                                  validator: (String? val) {
+                                    if (val != null) {
+                                      return (val.length < 5)
+                                          ? "아이디는 5자 이상이어야 합니다."
+                                          : null;
+                                    }
+                                    return "아이디는 필수 기입 사항입니다.";
+                                  },
+                                  decoration:
+                                      const InputDecoration(hintText: "아이디"),
+                                ),
+                                TextFormField(
+                                  controller: idController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp(r'[:]'))
+                                  ],
+                                  validator: (String? val) {
+                                    if (val != null) {
+                                      return (val.length < 8)
+                                          ? "비밀번호는 8자 이상이어야 합니다."
+                                          : null;
+                                    }
+                                    return "비밀번호는 필수 기입 사항입니다.";
+                                  },
+                                  decoration:
+                                      const InputDecoration(hintText: "비밀번호"),
+                                ),
+                                Column(
+                                  children: [
+                                    TextFormField(
+                                      controller: idController,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.deny(
+                                            RegExp(r'[:]'))
+                                      ],
+                                      validator: (String? val) {
+                                        if (val != null) {
+                                          return (val.length < 11)
+                                              ? "전화번호는 11자 이하이어야 합니다."
+                                              : null;
+                                        }
+                                        return "전화번호는 필수 기입 사항입니다.";
+                                      },
+                                      decoration: const InputDecoration(
+                                          hintText: "전화번호"),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    TextButton(
+                                      onPressed: () => {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            title: const Text("인증번호 확인"),
+                                            content: Form(
+                                              child: SizedBox(
+                                                height: 120,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    TextFormField(
+                                                      controller:
+                                                          chkCodeController,
+                                                      maxLength: 6,
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                      ],
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () {},
+                                                      child: const Text("확인하기"),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                          horizontal: 100,
+                                        ),
+                                        child: Text("인증하기"),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
+                          ),
                           Column(
                             children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
                               TextButton(
                                 style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all(
                                     const Size(50, 25),
                                   ),
+                                  alignment: Alignment.centerLeft,
                                 ),
                                 onPressed: () {
                                   showDialog(
@@ -202,6 +296,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                     ? Text("${school.name} / ${school.locate}")
                                     : const Text("학교 검색하기"),
                               ),
+                              const SizedBox(height: 30),
                               TextButton(
                                 style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all(
@@ -258,21 +353,13 @@ class _JoinScreenState extends State<JoinScreen> {
                                                 TextButton(
                                                   onPressed: () {
                                                     joinModel = JoinModel(
-                                                      id: controllerList[0]
-                                                          .text,
+                                                      id: idController.text,
                                                       password:
-                                                          controllerList[1]
-                                                              .text,
-                                                      name: controllerList[2]
-                                                          .text,
-                                                      birthday:
-                                                          controllerList[3]
+                                                          passwordController
                                                               .text,
                                                       phoneNumber:
-                                                          controllerList[4]
+                                                          phoneNumberController
                                                               .text,
-                                                      stdNum: controllerList[5]
-                                                          .text,
                                                       code: invitedCode.text,
                                                       schoolId:
                                                           school.id.toString(),
@@ -291,12 +378,9 @@ class _JoinScreenState extends State<JoinScreen> {
                                       );
                                     } else {
                                       joinModel = JoinModel(
-                                        id: controllerList[0].text,
-                                        password: controllerList[1].text,
-                                        name: controllerList[2].text,
-                                        birthday: controllerList[3].text,
-                                        phoneNumber: controllerList[4].text,
-                                        stdNum: controllerList[5].text,
+                                        id: idController.text,
+                                        password: passwordController.text,
+                                        phoneNumber: phoneNumberController.text,
                                         code: "",
                                         schoolId: school.id.toString(),
                                         authType: describeEnum(AuthType.DIRECT),
