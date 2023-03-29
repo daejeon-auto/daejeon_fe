@@ -37,6 +37,17 @@ class ApiService {
     }
   }
 
+  Future<SchoolListModel> schoolName({required int schoolId}) async {
+    var url = Uri.parse("$_domain/school-info/$schoolId");
+
+    var res = await http.get(url, headers: headers);
+
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+    var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
+
+    return SchoolListModel.fromJson(body);
+  }
+
   Future<void> chkCode({
     required String code,
     required String phoneNumber,

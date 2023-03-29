@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/post/post_model.dart';
+import 'package:daejeon_fe/model/school_list_model.dart';
 import 'package:daejeon_fe/screen/nav_bar_screen.dart';
 import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sticky_footer_scrollview/sticky_footer_scrollview.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,8 +21,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int page = 0;
-  late int schoolId;
   List<PostModel> postList = [];
+  late int schoolId;
+  SchoolListModel? schoolInfo;
   late Stream<PostListModel?> newPostList;
   final scrollController = ScrollController();
   final postListStreamController = StreamController<PostListModel?>();
@@ -29,7 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     schoolId = widget.reqSchoolId == null ? 0 : widget.reqSchoolId!;
     newPostList = postListStreamController.stream;
+    initSchoolInfo();
     getPostList(page).then((value) => postListStreamController.add(value));
+    setState(() {});
     super.initState();
   }
 
@@ -37,6 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     postListStreamController.close();
     super.dispose();
+  }
+
+  Future<void> initSchoolInfo() async {
+    schoolInfo = await ApiService().schoolName(schoolId: schoolId);
+    setState(() {});
   }
 
   Future<PostListModel> getPostList(int page) async {
@@ -76,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       endDrawer: const NavMenu(),
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
@@ -89,6 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     "assets/logo.png",
                   )),
             ),
+            schoolInfo == null
+                ? LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: 50,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Text("${schoolInfo!.name} / ${schoolInfo!.locate}"),
+                  ),
           ],
         ),
       ),
