@@ -16,8 +16,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  static const String _domain = "http://192.168.18.89";
-  // static const String _domain = "https://daejeon-be-production.up.railway.app";
+  // static const String _domain = "http://192.168.32.89";
+  static const String _domain = "https://daejeon-be-production.up.railway.app";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -38,13 +38,46 @@ class ApiService {
     }
   }
 
+  Future<void> chkCode({
+    required String code,
+    required String phoneNumber,
+  }) async {
+    var url = Uri.parse("$_domain/chk-code");
+
+    if (!RegExp(r'(^(?:[+0]9)?[0-9]{11,12}$)').hasMatch(phoneNumber)) {
+      throw Exception("phoneNumber valid fail");
+    }
+
+    var res = await http.post(url,
+        headers: headers,
+        body: jsonEncode({
+          "phoneNumber": phoneNumber,
+          "code": code,
+        }));
+
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+  }
+
+  Future<void> pushChkCode({required String number}) async {
+    var url = Uri.parse("$_domain/push-chk-code");
+
+    if (!RegExp(r'(^(?:[+0]9)?[0-9]{11,12}$)').hasMatch(number)) {
+      throw Exception("phoneNumber valid fail");
+    }
+
+    var res = await http.post(url,
+        headers: headers, body: jsonEncode({"phoneNumber": number}));
+
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+  }
+
   Future<PostListModel> getPostList(
       {required int page, required int schoolId}) async {
     await _initCookie();
 
     var url = Uri.parse("$_domain/posts/?page=$page&schoolId=$schoolId");
 
-    var res = await http.get(url, headers: headers);
+    var res = await http.post(url, headers: headers);
 
     if (res.statusCode != 200) throw Exception(res.statusCode);
 
@@ -125,8 +158,6 @@ class ApiService {
     if (body.id.length < 5) throw Exception("idLen");
     if (body.password.length < 8) throw Exception("passwordLen");
     if (body.phoneNumber.length > 11) throw Exception("phoneNumberLen");
-    if (body.birthday.length != 8) throw Exception("birthDayLen");
-    if (body.stdNum.length < 4) throw Exception("stdNumLen");
 
     var url = Uri.parse("$_domain/sign-up");
     var res = await http.post(

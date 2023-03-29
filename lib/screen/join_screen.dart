@@ -11,18 +11,13 @@ import 'package:flutter/services.dart'
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
-  static const List<String> _inputList = [
-    "아이디",
-    "비밀번호",
-    "전화번호 ex) 01012341234",
-  ];
 
   @override
   State<JoinScreen> createState() => _JoinScreenState();
 }
 
 class _JoinScreenState extends State<JoinScreen> {
-  bool isChecked = false;
+  bool isChecked = false, isPhoneChk = false;
   bool isSchoolSet = false, isLoading = false;
   String searchSchool = "";
   SchoolListModel school = SchoolListModel(id: 0, name: "", locate: "");
@@ -38,7 +33,6 @@ class _JoinScreenState extends State<JoinScreen> {
   late TextEditingController passwordController = TextEditingController();
   late TextEditingController phoneNumberController = TextEditingController();
 
-  // 인증 코드 확인
   late TextEditingController chkCodeController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -78,12 +72,18 @@ class _JoinScreenState extends State<JoinScreen> {
   }
 
   void join() async {
+    var formKeyState = _formKey.currentState!;
     try {
-      isLoading = true;
-      setState(() {});
-      await ApiService().join(body: joinModel);
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
-    } on Exception catch (e) {
+      if (formKeyState.validate()) {
+        formKeyState.save();
+        isLoading = true;
+        setState(() {});
+
+        await ApiService().join(body: joinModel);
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+      }
+    } catch (e) {
       isLoading = false;
       setState(() {});
 
@@ -113,6 +113,69 @@ class _JoinScreenState extends State<JoinScreen> {
           content: Text(content),
         ),
       );
+    }
+  }
+
+  Widget codeChkWidget() {
+    return AlertDialog(
+      title: const Text("인증번호 확인"),
+      content: Form(
+        child: SizedBox(
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextFormField(
+                controller: chkCodeController,
+                maxLength: 6,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+              ElevatedButton(
+                onPressed: chkCode,
+                child: const Text("확인하기"),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void pushChkCode(BuildContext context) async {
+    try {
+      await ApiService().pushChkCode(number: phoneNumberController.text);
+
+      // ignore: use_build_context_synchronously
+      showDialog(context: context, builder: (_) => codeChkWidget());
+    } catch (e) {
+      if (e.toString() == "Exception: phoneNumber valid fail") {
+        showDialog(
+          context: context,
+          builder: (ctx) => const AlertDialog(
+            title: Text("전화번호를 다시 확인해 주십시오."),
+          ),
+        );
+      }
+
+      print(e);
+    }
+  }
+
+  void chkCode() async {
+    try {
+      await ApiService().chkCode(
+        code: chkCodeController.text,
+        phoneNumber: phoneNumberController.text,
+      );
+
+      isPhoneChk = true;
+      setState(() {});
+
+      Navigator.pop(context);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -161,6 +224,7 @@ class _JoinScreenState extends State<JoinScreen> {
                             ),
                           ),
                           Form(
+                            key: _formKey,
                             child: Column(
                               children: [
                                 TextFormField(
@@ -181,7 +245,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                       const InputDecoration(hintText: "아이디"),
                                 ),
                                 TextFormField(
-                                  controller: idController,
+                                  controller: passwordController,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.deny(
                                         RegExp(r'[:]'))
@@ -197,10 +261,44 @@ class _JoinScreenState extends State<JoinScreen> {
                                   decoration:
                                       const InputDecoration(hintText: "비밀번호"),
                                 ),
+                                TextButton(
+                                  style: ButtonStyle(
+                                    minimumSize: MaterialStateProperty.all(
+                                      const Size(50, 25),
+                                    ),
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            const SelectSchoolDialog()).then(
+                                      (value) {
+                                        if (value != null) {
+                                          school = value;
+                                          isSchoolSet = true;
+                                          setState(() {});
+                                        }
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      // horizontal: 50,
+                                      vertical: 15,
+                                    ),
+                                    width: 300,
+                                    // height: 30,
+                                    child: isSchoolSet
+                                        ? Text(
+                                            "${school.name} / ${school.locate}")
+                                        : const Text("학교 검색하기"),
+                                  ),
+                                ),
                                 Column(
                                   children: [
                                     TextFormField(
-                                      controller: idController,
+                                      controller: phoneNumberController,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.deny(
                                             RegExp(r'[:]'))
@@ -220,39 +318,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                       width: 5,
                                     ),
                                     TextButton(
-                                      onPressed: () => {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                            title: const Text("인증번호 확인"),
-                                            content: Form(
-                                              child: SizedBox(
-                                                height: 120,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    TextFormField(
-                                                      controller:
-                                                          chkCodeController,
-                                                      maxLength: 6,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly,
-                                                      ],
-                                                    ),
-                                                    ElevatedButton(
-                                                      onPressed: () {},
-                                                      child: const Text("확인하기"),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      },
+                                      onPressed: () => pushChkCode(context),
                                       child: const Padding(
                                         padding: EdgeInsets.symmetric(
                                           vertical: 15,
@@ -260,98 +326,45 @@ class _JoinScreenState extends State<JoinScreen> {
                                         ),
                                         child: Text("인증하기"),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all(
-                                    const Size(50, 25),
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                ),
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          const SelectSchoolDialog()).then(
-                                    (value) {
-                                      if (value != null) {
-                                        school = value;
-                                        isSchoolSet = true;
-                                        setState(() {});
-                                      }
-                                    },
-                                  );
-                                },
-                                child: isSchoolSet
-                                    ? Text("${school.name} / ${school.locate}")
-                                    : const Text("학교 검색하기"),
-                              ),
-                              const SizedBox(height: 30),
-                              TextButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all(
-                                    const Size(50, 25),
-                                  ),
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                ),
-                                child: const Text(
-                                  '개인정보이용약관 확인',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                                onPressed: () {
-                                  txtFile(context);
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Checkbox(
-                                value: isChecked,
-                                onChanged: (val) =>
-                                    setState(() => isChecked = val!),
-                              ),
-                              const Text("추천 코드 사용"),
-                            ],
-                          ),
-                          isLoading
-                              ? LoadingAnimationWidget.staggeredDotsWave(
-                                  color: Colors.blueAccent,
-                                  size: 50,
-                                )
-                              : ElevatedButton(
-                                  onPressed: () {
-                                    if (isChecked) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text("추천코드 입력"),
-                                          content: SizedBox(
-                                            width: 100,
-                                            height: 120,
-                                            child: Column(
-                                              children: [
-                                                TextField(
-                                                  controller: invitedCode,
-                                                  maxLength: 13,
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
+                                    ),
+                                    const SizedBox(height: 30),
+                                    TextButton(
+                                      style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                          const Size(50, 25),
+                                        ),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                      ),
+                                      child: const Text(
+                                        '개인정보이용약관 확인',
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                      onPressed: () {
+                                        txtFile(context);
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    isLoading
+                                        ? LoadingAnimationWidget
+                                            .staggeredDotsWave(
+                                            color: Colors.blueAccent,
+                                            size: 50,
+                                          )
+                                        : ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                isPhoneChk
+                                                    ? Colors.blueAccent
+                                                    : Colors.grey,
+                                              ),
+                                            ),
+                                            onPressed: isPhoneChk
+                                                ? () {
                                                     joinModel = JoinModel(
                                                       id: idController.text,
                                                       password:
@@ -360,36 +373,22 @@ class _JoinScreenState extends State<JoinScreen> {
                                                       phoneNumber:
                                                           phoneNumberController
                                                               .text,
-                                                      code: invitedCode.text,
+                                                      code: "",
                                                       schoolId:
                                                           school.id.toString(),
                                                       authType: describeEnum(
-                                                          AuthType.INDIRECT),
+                                                          AuthType.DIRECT),
                                                     );
                                                     join();
-                                                  },
-                                                  child:
-                                                      const Text("추천코드로 회원가입"),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      joinModel = JoinModel(
-                                        id: idController.text,
-                                        password: passwordController.text,
-                                        phoneNumber: phoneNumberController.text,
-                                        code: "",
-                                        schoolId: school.id.toString(),
-                                        authType: describeEnum(AuthType.DIRECT),
-                                      );
-                                      join();
-                                    }
-                                  },
-                                  child: const Text("회원가입"),
-                                )
+                                                  }
+                                                : () {},
+                                            child: const Text("회원가입"),
+                                          )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
