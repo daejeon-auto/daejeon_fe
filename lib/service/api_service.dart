@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:daejeon_fe/model/code_list.dart';
 import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
 import 'package:daejeon_fe/model/join_model.dart';
@@ -224,25 +223,6 @@ class ApiService {
     var memberInfo = MemberInfo.fromJson(result.data);
 
     return memberInfo;
-  }
-
-  Future<List<CodeList>> getCodeList() async {
-    var url = Uri.parse("$_domain/code/list");
-    var res = await http.post(
-      url,
-      headers: headers,
-    );
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
-
-    var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
-    List<CodeList> codeList = [];
-    for (var e in result.data) {
-      var code = CodeList.fromJson(e);
-      codeList.add(code);
-    }
-
-    return codeList;
   }
 
   Future<void> _updateCookie(http.Response response) async {

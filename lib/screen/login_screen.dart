@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwordController.text,
         rememberMe: isAutoLogin,
       );
-      Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
     } on Exception catch (e) {
       var content = "";
       if (e.toString() == "Exception: id or password not exist") {
