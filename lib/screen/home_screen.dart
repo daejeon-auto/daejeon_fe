@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/post/post_model.dart';
-import 'package:daejeon_fe/screen/NavBar.dart';
+import 'package:daejeon_fe/screen/nav_bar_screen.dart';
 import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/card_widget.dart';

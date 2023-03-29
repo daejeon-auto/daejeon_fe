@@ -25,8 +25,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
                 Icon(
                   Icons.post_add_outlined,
                   size: 30,
@@ -50,8 +50,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
                 Icon(
                   Icons.account_circle,
                   size: 30,
@@ -72,8 +72,31 @@ class NavMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  size: 30,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "다른 학교 가기",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await ApiService().logout();
+              Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            },
+          ),
+          ListTile(
+            title: const Row(
+              children: [
                 Icon(
                   Icons.logout,
                   size: 30,
