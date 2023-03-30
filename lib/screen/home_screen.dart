@@ -10,6 +10,7 @@ import 'package:daejeon_fe/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sticky_footer_scrollview/sticky_footer_scrollview.dart';
+import 'package:webviewx/webviewx.dart';
 
 class HomeScreen extends StatefulWidget {
   final int? reqSchoolId;
@@ -169,17 +170,52 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             );
                           }
-                          postList.addAll(snapshot.data!.postList);
+                          if (!postList.contains(snapshot.data!.postList[0])) {
+                            postList.addAll(snapshot.data!.postList);
+                          }
                           return Column(
                             children: [
                               SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height - 110,
+                                    MediaQuery.of(context).size.height - 175,
                                 width: MediaQuery.of(context).size.width - 20,
                                 child: StickyFooterScrollView(
                                   scrollController: scrollController,
                                   itemCount: postList.length,
                                   itemBuilder: (context, index) {
+                                    if (index % 10 == 0) {
+                                      return Column(
+                                        children: [
+                                          WebViewX(
+                                            initialContent: '''
+<ins class="kakao_ad_area" style="display:none;"
+  data-ad-unit = "DAN-nMZtqcd8zZxx9q4C"
+  data-ad-width = "320"
+  data-ad-height = "50">
+</ins>
+<script type="text/javascript" src="https://t1.daumcdn.net/kas/static/ba.min.js" async></script>
+''',
+                                            initialSourceType: SourceType.html,
+                                            javascriptMode:
+                                                JavascriptMode.unrestricted,
+                                            height: 70,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                10,
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                20,
+                                            child: PostCard(
+                                              post: postList[index],
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
                                     return PostCard(
                                       post: postList[index],
                                     );
