@@ -27,6 +27,9 @@ class _PostCardState extends State<PostCard> {
       isReported = !isReported;
       setState(() {});
     } on Exception catch (e) {
+      if (e.toString() == "Exception: 401") {
+        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+      }
       if (e.toString() == "Exception: 400") {
         showDialog(
             context: context,
@@ -57,6 +60,9 @@ class _PostCardState extends State<PostCard> {
       isLiked = !isLiked;
       setState(() {});
     } on Exception catch (e) {
+      if (e.toString() == "Exception: 401") {
+        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+      }
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -131,13 +137,13 @@ class _PostCardState extends State<PostCard> {
                                     height: 220,
                                     child: Column(
                                       children: [
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 300,
                                           height: 50,
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: const [
+                                            children: [
                                               Flexible(
                                                 child: Text(
                                                   "신고시 사유는 10자 ~ 100자 내로 작성해 주시기 바랍니다.",

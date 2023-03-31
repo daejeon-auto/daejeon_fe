@@ -46,7 +46,6 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getSchoolList();
     setState(() {});
     super.initState();
@@ -66,8 +65,11 @@ class _AppState extends State<App> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 100,
+                ),
                 Container(
-                  width: 1500,
+                  width: MediaQuery.of(context).size.width - 10,
                   height: 120,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
@@ -106,8 +108,8 @@ class _AppState extends State<App> {
                 ),
                 Container(
                   decoration: const BoxDecoration(color: Colors.white),
-                  width: 1500,
-                  height: 500,
+                  width: MediaQuery.of(context).size.width - 10,
+                  height: MediaQuery.of(context).size.height - 400,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
                     child: ListView.separated(
@@ -143,6 +145,9 @@ class _AppState extends State<App> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 100,
                 ),
               ],
             ),

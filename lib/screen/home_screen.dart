@@ -101,13 +101,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
             ),
             schoolInfo == null
-                ? LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.white,
-                    size: 50,
-                  )
-                : Padding(
+                ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text("${schoolInfo!.name} / ${schoolInfo!.locate}"),
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                  )
+                : Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Expanded(
+                        child: Text(
+                          "${schoolInfo!.name} / ${schoolInfo!.locate}",
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
                   ),
           ],
         ),
