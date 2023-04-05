@@ -15,8 +15,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  static const String _domain = "http://10.157.217.197";
-  // static const String _domain = "https://daejeon-be-production.up.railway.app";
+  // static const String _domain = "http://localhost:8080";
+  static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -262,6 +262,10 @@ class ApiService {
     if (rawToken != null) {
       storage.setItem('token', rawToken);
     }
+  }
+
+  bool isLogin() {
+    return getToken() == "" ? headers["token"] != null : true;
   }
 
   String getToken() {

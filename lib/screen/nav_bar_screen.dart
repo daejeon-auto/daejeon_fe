@@ -49,28 +49,29 @@ class NavMenu extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            title: const Row(
-              children: [
-                Icon(
-                  Icons.account_circle,
-                  size: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "마이페이지",
-                    style: TextStyle(
-                      fontSize: 18,
+          if (ApiService().isLogin())
+            ListTile(
+              title: const Row(
+                children: [
+                  Icon(
+                    Icons.account_circle,
+                    size: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "마이페이지",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, "/my-page");
+              },
             ),
-            onTap: () {
-              Navigator.pushNamed(context, "/my-page");
-            },
-          ),
           ListTile(
             title: const Row(
               children: [
@@ -94,30 +95,31 @@ class NavMenu extends StatelessWidget {
               Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
             },
           ),
-          ListTile(
-            title: const Row(
-              children: [
-                Icon(
-                  Icons.logout,
-                  size: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "로그아웃",
-                    style: TextStyle(
-                      fontSize: 18,
+          if (ApiService().isLogin())
+            ListTile(
+              title: const Row(
+                children: [
+                  Icon(
+                    Icons.logout,
+                    size: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "로그아웃",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              onTap: () async {
+                await ApiService().logout();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (_) => false);
+              },
             ),
-            onTap: () async {
-              await ApiService().logout();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (_) => false);
-            },
-          ),
         ],
       ),
     );
