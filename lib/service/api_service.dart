@@ -115,7 +115,7 @@ class ApiService {
   writePost({required String description}) async {
     await _initCookie();
 
-    if (description.trimRight().trimLeft().length < 15) {
+    if (description.trimRight().trimLeft().length < 10) {
       throw Exception(400);
     }
     var url = Uri.parse("$_domain/post/write");
