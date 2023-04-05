@@ -12,6 +12,7 @@ void main() {
 
   runApp(
     MaterialApp(
+      title: "AnonPost",
       routes: {
         "/login": (context) => const LoginScreen(),
         "/join": (context) => const JoinScreen(),
