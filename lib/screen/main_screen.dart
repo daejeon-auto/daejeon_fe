@@ -65,15 +65,12 @@ class _AppState extends State<App> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 100,
-                ),
                 Container(
                   width: MediaQuery.of(context).size.width - 10,
-                  height: 120,
+                  height: 90,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(50),
+                      Radius.circular(2),
                     ),
                     color: Colors.white,
                   ),
@@ -81,7 +78,10 @@ class _AppState extends State<App> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 25,
+                          vertical: 5,
+                        ),
                         child: TextField(
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(
@@ -95,7 +95,7 @@ class _AppState extends State<App> {
                               _filterSchools(value, schoolList),
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
-                            fontSize: 40.0,
+                            fontSize: 30.0,
                           ),
                           controller: searchSchoolController,
                         ),
@@ -109,7 +109,7 @@ class _AppState extends State<App> {
                 Container(
                   decoration: const BoxDecoration(color: Colors.white),
                   width: MediaQuery.of(context).size.width - 10,
-                  height: MediaQuery.of(context).size.height - 400,
+                  height: 300,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
                     child: ListView.separated(
@@ -130,7 +130,7 @@ class _AppState extends State<App> {
                             child: Text(
                               "${filtedSchoolList[idx].name} / ${filtedSchoolList[idx].locate}",
                               style: const TextStyle(
-                                fontSize: 30,
+                                fontSize: 25,
                               ),
                             ),
                           ),
@@ -145,9 +145,6 @@ class _AppState extends State<App> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 100,
                 ),
               ],
             ),
