@@ -25,8 +25,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.post_add_outlined,
                   size: 30,
@@ -51,8 +51,8 @@ class NavMenu extends StatelessWidget {
           ),
           if (ApiService().isLogin())
             ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Icon(
                     Icons.account_circle,
                     size: 30,
@@ -73,8 +73,8 @@ class NavMenu extends StatelessWidget {
               },
             ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.search,
                   size: 30,
@@ -97,8 +97,8 @@ class NavMenu extends StatelessWidget {
           ),
           if (ApiService().isLogin())
             ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Icon(
                     Icons.logout,
                     size: 30,
@@ -116,6 +116,30 @@ class NavMenu extends StatelessWidget {
               ),
               onTap: () async {
                 await ApiService().logout();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (_) => false);
+              },
+            ),
+          if (!ApiService().isLogin())
+            ListTile(
+              title: Row(
+                children: const [
+                  Icon(
+                    Icons.login,
+                    size: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "로그인",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/login', (_) => false);
               },
