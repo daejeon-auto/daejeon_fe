@@ -155,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 20,
                               ),
                               Container(
-                                height: 100,
                                 width: 300,
                                 decoration: BoxDecoration(
                                   border: Border.all(
