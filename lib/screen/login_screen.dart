@@ -14,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final idController = TextEditingController();
   final passwordController = TextEditingController();
   bool isAutoLogin = false;
+  String errText = "";
 
   @override
   void dispose() {
@@ -41,19 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (e.toString() == "Exception: account is disabled") {
         content = "계정이 정지당했습니다.";
       }
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text("로그인 문제"),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("확인"),
-            ),
-          ],
-        ),
-      );
+
+      errText = content;
+      setState(() {});
     }
   }
 
@@ -70,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               SizedBox(
                 width: 300,
-                height: 300,
+                height: errText == "" ? 300 : 350,
                 child: Container(
                   decoration: const BoxDecoration(
                       color: Colors.white,
@@ -157,6 +148,33 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
+                        if (errText != "")
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                height: 100,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.red,
+                                    strokeAlign: 1,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Text(
+                                    errText,
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
                       ],
                     ),
                   ),

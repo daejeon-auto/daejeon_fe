@@ -137,13 +137,13 @@ class _PostCardState extends State<PostCard> {
                                     height: 220,
                                     child: Column(
                                       children: [
-                                        const SizedBox(
+                                        SizedBox(
                                           width: 300,
                                           height: 50,
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: [
+                                            children: const [
                                               Flexible(
                                                 child: Text(
                                                   "신고시 사유는 10자 ~ 100자 내로 작성해 주시기 바랍니다.",

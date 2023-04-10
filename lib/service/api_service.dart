@@ -16,8 +16,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  static const String _domain = "http://localhost:8080";
-  // static const String _domain = "https://inab.site";
+  // static const String _domain = "http://localhost:8080";
+  static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
