@@ -3,7 +3,7 @@ import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../model/school_list_model.dart';
+import '../model/school/school_list_model.dart';
 
 class App extends StatefulWidget {
   const App({super.key});

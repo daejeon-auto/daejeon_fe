@@ -1,4 +1,4 @@
-import 'package:daejeon_fe/model/school_list_model.dart';
+import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:flutter/material.dart';
 
 import '../service/api_service.dart';

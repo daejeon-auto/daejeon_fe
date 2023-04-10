@@ -1,3 +1,4 @@
+
 class SchoolListModel {
   final String name, locate;
   final int id;

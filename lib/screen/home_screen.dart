@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:daejeon_fe/model/post/post_list_model.dart';
 import 'package:daejeon_fe/model/post/post_model.dart';
-import 'package:daejeon_fe/model/school_list_model.dart';
+import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:daejeon_fe/screen/nav_bar_screen.dart';
 import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> initSchoolInfo() async {
-    schoolInfo = await ApiService().schoolName(schoolId: schoolId);
+    schoolInfo = (await ApiService().schoolName(schoolId: schoolId));
     setState(() {});
   }
 

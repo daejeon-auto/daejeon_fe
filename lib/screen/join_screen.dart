@@ -1,6 +1,6 @@
 import 'package:daejeon_fe/model/common/auth_type.dart';
 import 'package:daejeon_fe/model/join_model.dart';
-import 'package:daejeon_fe/model/school_list_model.dart';
+import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/select_school_dialog_widget.dart';
 import 'package:flutter/foundation.dart';

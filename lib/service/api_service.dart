@@ -5,7 +5,8 @@ import 'package:daejeon_fe/model/common/result_model.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/member_info.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
-import 'package:daejeon_fe/model/school_list_model.dart';
+import 'package:daejeon_fe/model/school/school_list_model.dart';
+import 'package:daejeon_fe/model/school/school_meal_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +16,8 @@ import '../model/post/post_model.dart';
 class ApiService {
   static final storage = LocalStorage("auth");
 
-  // static const String _domain = "http://localhost:8080";
-  static const String _domain = "https://inab.site";
+  static const String _domain = "http://localhost:8080";
+  // static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -37,7 +38,23 @@ class ApiService {
     }
   }
 
+  Future<SchoolMealModel> schoolMenu() async {
+    await _initCookie();
+    var url = Uri.parse("$_domain/school/meal");
+
+    var res = await http.post(url, headers: headers);
+
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+    var decode = utf8.decode(res.bodyBytes);
+    var body = jsonDecode(decode)["data"];
+
+    var meal = SchoolMealModel.fromJson(body);
+
+    return meal;
+  }
+
   Future<SchoolListModel> schoolName({required int schoolId}) async {
+    await _initCookie();
     var url = Uri.parse("$_domain/school-info/$schoolId");
 
     var res = await http.get(url, headers: headers);
