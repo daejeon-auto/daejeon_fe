@@ -89,17 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Colors.white),
-              clipBehavior: Clip.hardEdge,
-              child: const Image(
-                  width: 50,
-                  height: 50,
-                  image: AssetImage(
-                    "assets/logo.png",
-                  )),
-            ),
             schoolInfo == null
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
