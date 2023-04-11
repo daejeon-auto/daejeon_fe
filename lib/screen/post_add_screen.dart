@@ -2,6 +2,7 @@ import 'package:daejeon_fe/screen/login_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:webviewx/webviewx.dart';
 
 class PostAddScreen extends StatefulWidget {
   const PostAddScreen({Key? key}) : super(key: key);
@@ -104,7 +105,19 @@ class _PostAddScreenState extends State<PostAddScreen> {
               const SizedBox(
                 height: 40,
               ),
-              const Text('비속어 쓰지 마삼')
+              WebViewX(
+                initialContent: '''
+            <ins class="kakao_ad_area" style="display:none;"
+data-ad-unit = "DAN-xzrZdEWsRO2UHhAe"
+data-ad-width = "300"
+data-ad-height = "250"></ins>
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+            ''',
+                initialSourceType: SourceType.html,
+                javascriptMode: JavascriptMode.unrestricted,
+                height: 270,
+                width: MediaQuery.of(context).size.width - 10,
+              ),
             ],
           ),
         ),
