@@ -54,7 +54,27 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, "/login"),
+                child: const Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text(
+                    "로그인하기",
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           color: Color(0xFFF5F8FF),
