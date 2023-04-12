@@ -98,13 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(
-                        "${schoolInfo!.name} / ${schoolInfo!.locate}",
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    child: Text(
+                      "${schoolInfo!.name} / ${schoolInfo!.locate}",
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
           ],
