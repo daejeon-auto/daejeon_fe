@@ -91,7 +91,6 @@ class NavMenu extends StatelessWidget {
               ],
             ),
             onTap: () async {
-              await ApiService().logout();
               Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
             },
           ),
