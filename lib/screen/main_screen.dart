@@ -55,23 +55,25 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text(
+          "INAB",
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
         actions: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, "/login"),
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Text(
-                    "로그인하기",
-                    softWrap: true,
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, "/login"),
+            child: const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text(
+                "로그인하기",
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 15,
                 ),
-              )
-            ],
+              ),
+            ),
           )
         ],
       ),
