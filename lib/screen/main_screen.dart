@@ -62,19 +62,20 @@ class _AppState extends State<App> {
           ),
         ),
         actions: [
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, "/login"),
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text(
-                "로그인하기",
-                softWrap: true,
-                style: TextStyle(
-                  fontSize: 15,
+          if (!ApiService().isLogin())
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, "/login"),
+              child: const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  "로그인하기",
+                  softWrap: true,
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
       body: Container(
