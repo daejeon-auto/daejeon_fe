@@ -17,16 +17,16 @@ class NavMenu extends StatelessWidget {
               color: Colors.blue,
             ),
             child: Text(
-              'Menu',
+              'INAB',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 25,
               ),
             ),
           ),
           ListTile(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
                 Icon(
                   Icons.post_add_outlined,
                   size: 30,
@@ -51,8 +51,8 @@ class NavMenu extends StatelessWidget {
           ),
           if (ApiService().isLogin())
             ListTile(
-              title: Row(
-                children: const [
+              title: const Row(
+                children: [
                   Icon(
                     Icons.account_circle,
                     size: 30,
@@ -73,8 +73,8 @@ class NavMenu extends StatelessWidget {
               },
             ),
           ListTile(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
                 Icon(
                   Icons.search,
                   size: 30,
@@ -97,8 +97,8 @@ class NavMenu extends StatelessWidget {
           ),
           if (ApiService().isLogin())
             ListTile(
-              title: Row(
-                children: const [
+              title: const Row(
+                children: [
                   Icon(
                     Icons.logout,
                     size: 30,
@@ -122,8 +122,8 @@ class NavMenu extends StatelessWidget {
             ),
           if (!ApiService().isLogin())
             ListTile(
-              title: Row(
-                children: const [
+              title: const Row(
+                children: [
                   Icon(
                     Icons.login,
                     size: 30,
