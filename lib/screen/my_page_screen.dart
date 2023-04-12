@@ -68,12 +68,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 244, 247, 255),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SingleChildScrollView(
-              child: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
                 width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -85,12 +85,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     children: [
                       WebViewX(
                         initialContent: '''
-            <ins class="kakao_ad_area" style="display:none;"
-            data-ad-unit = "DAN-TjiUKJ1Rui5HWK52"
-            data-ad-width = "300"
-            data-ad-height = "250"></ins>
-            <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-            ''',
+              <ins class="kakao_ad_area" style="display:none;"
+              data-ad-unit = "DAN-TjiUKJ1Rui5HWK52"
+              data-ad-width = "300"
+              data-ad-height = "250"></ins>
+              <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+              ''',
                         initialSourceType: SourceType.html,
                         javascriptMode: JavascriptMode.unrestricted,
                         height: 270,
@@ -207,8 +207,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
