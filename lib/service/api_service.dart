@@ -31,6 +31,7 @@ class ApiService {
     var token = getToken();
 
     headers['X-Auth-Token'] = token;
+    headers['X-Refresh-Token'] = getRefreshToken();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString("JSESSION") != null) {
@@ -43,8 +44,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school/meal");
 
     var res = await http.post(url, headers: headers);
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
     var decode = utf8.decode(res.bodyBytes);
     var body = jsonDecode(decode)["data"];
 
@@ -58,8 +61,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school-info/$schoolId");
 
     var res = await http.get(url, headers: headers);
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
     var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
 
     return SchoolListModel.fromJson(body);
@@ -81,8 +86,10 @@ class ApiService {
           "phoneNumber": phoneNumber,
           "code": code,
         }));
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
   }
 
   Future<void> pushChkCode({required String number}) async {
@@ -94,8 +101,10 @@ class ApiService {
 
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"phoneNumber": number}));
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
   }
 
   Future<PostListModel> getPostList(
@@ -105,8 +114,10 @@ class ApiService {
     var url = Uri.parse("$_domain/posts?page=$page&schoolId=$schoolId");
 
     var res = await http.post(url, headers: headers);
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
 
     var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
     List<dynamic> postListDy = body['postList'];
@@ -144,7 +155,7 @@ class ApiService {
         'description': description.trimLeft().replaceAll(RegExp('\\s+'), ' ')
       }),
     );
-
+    if (res.statusCode == 401) refreshAccessToken();
     if (res.statusCode == 200) return;
     throw Exception(res.statusCode.toString());
   }
@@ -167,8 +178,8 @@ class ApiService {
         'rememberMe': rememberMe.toString(),
       },
     );
-
-    if (res.statusCode != 200) throw Error();
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) throw Error();
     var body = LoginResult.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
 
     if (body.result == "fail") {
@@ -192,7 +203,7 @@ class ApiService {
       headers: headers,
       body: jsonEncode(body.toJson()),
     );
-
+    if (res.statusCode == 401) refreshAccessToken();
     if (res.statusCode != 201) {
       throw Exception(res.statusCode);
     }
@@ -205,8 +216,11 @@ class ApiService {
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
 
+    if (res.statusCode == 401) refreshAccessToken();
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
     for (var school in result.data) {
       schoolList.add(SchoolListModel.fromJson(school));
     }
@@ -219,8 +233,10 @@ class ApiService {
     var url = Uri.parse("$_domain/post/report/$postId");
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"reason": reason}));
-
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
 
     return true;
   }
@@ -230,8 +246,8 @@ class ApiService {
 
     var url = Uri.parse("$_domain/post/like/add/$postId");
     var res = await http.post(url, headers: headers);
-
-    if (res.statusCode != 200) {
+    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
 
@@ -244,7 +260,7 @@ class ApiService {
       url,
       headers: headers,
     );
-
+    if (res.statusCode == 401) refreshAccessToken();
     if (res.statusCode != 202) throw Exception(res.statusCode);
 
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
@@ -269,10 +285,11 @@ class ApiService {
     await _initCookie();
     await http.post(Uri.parse("$_domain/logout"), headers: headers);
     storage.deleteItem('token');
+    storage.deleteItem('refreshToken');
   }
 
   Future<void> _updateToken(http.Response res) async {
-    String? rawToken = res.headers['x-auth-token'];
+    String? rawToken = res.headers['X-Auth-Token'];
 
     await storage.ready;
 
@@ -281,11 +298,32 @@ class ApiService {
     }
   }
 
+  Future<void> _updateRefreshToken(http.Response res) async {
+    String? rawToken = res.headers['X-Refresh-Token'];
+
+    await storage.ready;
+
+    if (rawToken != null) {
+      storage.setItem('refreshToken', rawToken);
+    }
+  }
+
+  Future<void> refreshAccessToken() async {
+    if (getRefreshToken().isEmpty) throw Exception("401");
+    var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
+    if (res.statusCode != 200 && res.statusCode != 401) throw Exception("401");
+    _updateRefreshToken(res);
+  }
+
   bool isLogin() {
     return getToken() == "" ? headers["token"] != null : true;
   }
 
   String getToken() {
     return storage.getItem('token') ?? "";
+  }
+
+  String getRefreshToken() {
+    return storage.getItem('refreshToken') ?? "";
   }
 }
