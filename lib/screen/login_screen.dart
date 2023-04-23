@@ -25,11 +25,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login() async {
     try {
-      await ApiService().loginPost(
+      var res = await ApiService().loginPost(
         id: idController.text,
         password: passwordController.text,
         rememberMe: isAutoLogin,
       );
+
+      if (res.isNotEmpty) {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Row(
+              children: [
+                const Text("정지 내역이 존재합니다."),
+                ElevatedButton(
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/home', (_) => false),
+                  child: const Text("닫기"),
+                )
+              ],
+            ),
+            content: ListView.separated(
+              itemBuilder: (ctx, idx) => Text(res[idx].toString()),
+              separatorBuilder: (_, a) => const SizedBox(
+                height: 10,
+              ),
+              itemCount: res.length,
+            ),
+          ),
+        );
+        return;
+      }
+
       Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
     } on Exception catch (e) {
       var content = "";

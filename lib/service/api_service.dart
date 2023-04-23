@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:daejeon_fe/model/common/login_result_model.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/member_info.dart';
 import 'package:daejeon_fe/model/post/post_list_model.dart';
+import 'package:daejeon_fe/model/punish.dart';
 import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:daejeon_fe/model/school/school_meal_model.dart';
 import 'package:http/http.dart' as http;
@@ -160,7 +160,7 @@ class ApiService {
     throw Exception(res.statusCode.toString());
   }
 
-  loginPost({
+  Future<List<Punish>> loginPost({
     required String id,
     required String password,
     required bool rememberMe,
@@ -180,14 +180,18 @@ class ApiService {
     );
     if (res.statusCode == 401) refreshAccessToken();
     if (res.statusCode != 200 && res.statusCode != 401) throw Error();
-    var body = LoginResult.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+    var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+    var memberInfo = MemberInfo.fromJson(body.data);
 
-    if (body.result == "fail") {
-      throw Exception(body.message);
+    if (body.hasError == true) {
+      throw Exception(res.statusCode);
     }
 
     await _updateCookie(res);
-    await _updateToken(res);
+    await _updateAccessToken(res);
+    await _updateRefreshToken(res);
+
+    return memberInfo.punishes;
   }
 
   join({required JoinModel body}) async {
@@ -288,7 +292,7 @@ class ApiService {
     storage.deleteItem('refreshToken');
   }
 
-  Future<void> _updateToken(http.Response res) async {
+  Future<void> _updateAccessToken(http.Response res) async {
     String? rawToken = res.headers['X-Auth-Token'];
 
     await storage.ready;
@@ -312,7 +316,7 @@ class ApiService {
     if (getRefreshToken().isEmpty) throw Exception("401");
     var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
     if (res.statusCode != 200 && res.statusCode != 401) throw Exception("401");
-    _updateRefreshToken(res);
+    _updateAccessToken(res);
   }
 
   bool isLogin() {
