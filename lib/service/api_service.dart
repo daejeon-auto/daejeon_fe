@@ -182,6 +182,11 @@ class ApiService {
     if (res.statusCode != 200 && res.statusCode != 401) throw Error();
     var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     var memberInfo = MemberInfo.fromJson(body.data);
+    List<dynamic> punishes =
+        body.data["punishes"].map((val) => Punish.fromJson(val)).toList();
+    for (var element in punishes) {
+      memberInfo.punishes.add(element);
+    }
 
     if (body.hasError == true) {
       throw Exception(res.statusCode);

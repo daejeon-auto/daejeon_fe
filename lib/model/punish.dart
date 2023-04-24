@@ -1,12 +1,9 @@
-import 'package:daejeon_fe/model/punish_rating.dart';
-
 class Punish {
   int id;
   String reason;
   DateTime expiredDate;
   bool isValid;
-  PunishRating rating;
-  String createdBy;
+  String createdBy, rating;
   String lastModifiedBy;
 
   Punish({
@@ -21,12 +18,11 @@ class Punish {
 
   factory Punish.fromJson(Map<String, dynamic> json) {
     return Punish(
-      id: json['punish_id'],
+      id: json['id'],
       reason: json['reason'],
       expiredDate: DateTime.parse(json['expired_date']),
       isValid: json['valid'],
-      rating: PunishRating.values.firstWhere(
-          (rating) => rating.toString() == json['rating']),
+      rating: json["rating"],
       createdBy: json['createdBy'],
       lastModifiedBy: json['lastModifiedBy'],
     );

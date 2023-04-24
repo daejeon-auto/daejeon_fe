@@ -36,23 +36,24 @@ class _LoginScreenState extends State<LoginScreen> {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Row(
-              children: [
-                const Text("정지 내역이 존재합니다."),
-                ElevatedButton(
-                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                      context, '/home', (_) => false),
-                  child: const Text("닫기"),
-                )
-              ],
-            ),
-            content: ListView.separated(
-              itemBuilder: (ctx, idx) => Text(res[idx].toString()),
-              separatorBuilder: (_, a) => const SizedBox(
-                height: 10,
+            title: const Center(child: Text("정지 내역이 존재합니다.")),
+            actions: [
+              Column(
+                children: [
+                  for (int i = 0; i < res.length; i++)
+                    Text(
+                        "${res[i].id} / ${res[i].reason} / ${res[i].rating} / ${res[i].expiredDate}"),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                        context, '/home', (_) => false),
+                    child: const Text("닫기"),
+                  )
+                ],
               ),
-              itemCount: res.length,
-            ),
+            ],
           ),
         );
         return;
