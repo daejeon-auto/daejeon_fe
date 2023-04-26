@@ -186,10 +186,6 @@ class ApiService {
       throw Exception(res.statusCode);
     }
 
-    print("-------- login api ----------");
-    print(res.headers);
-    print("-------- login api ----------");
-
     await _updateCookie(res);
     await _updateAccessToken(res);
     await _updateRefreshToken(res);
@@ -296,7 +292,6 @@ class ApiService {
 
   Future<void> _updateAccessToken(http.Response res) async {
     String? rawToken = res.headers['x-auth-token'];
-    print(res.headers);
 
     if (rawToken != null) {
       prefs.setString('token', rawToken);
