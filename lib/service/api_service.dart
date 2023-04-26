@@ -8,14 +8,11 @@ import 'package:daejeon_fe/model/punish.dart';
 import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:daejeon_fe/model/school/school_meal_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static final storage = LocalStorage("auth");
-
   // static const String _domain = "http://localhost:8080";
   static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
@@ -24,19 +21,14 @@ class ApiService {
   };
 
   ApiService();
+  late SharedPreferences prefs;
 
   _initCookie() async {
-    await storage.ready;
-
-    var token = getToken();
+    prefs = await SharedPreferences.getInstance();
+    var token = await getToken();
 
     headers['X-Auth-Token'] = token;
-    headers['X-Refresh-Token'] = getRefreshToken();
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString("JSESSION") != null) {
-      headers['cookie'] = prefs.getString("JSESSION")!;
-    }
+    headers['X-Refresh-Token'] = await getRefreshToken();
   }
 
   Future<SchoolMealModel> schoolMenu() async {
@@ -165,6 +157,8 @@ class ApiService {
     required String password,
     required bool rememberMe,
   }) async {
+    await _initCookie();
+
     var url = Uri.parse("$_domain/login");
 
     var res = await http.post(
@@ -191,6 +185,10 @@ class ApiService {
     if (body.hasError == true) {
       throw Exception(res.statusCode);
     }
+
+    print("-------- login api ----------");
+    print(res.headers);
+    print("-------- login api ----------");
 
     await _updateCookie(res);
     await _updateAccessToken(res);
@@ -285,7 +283,6 @@ class ApiService {
       headers['cookie'] =
           (index == -1) ? rawCookie : rawCookie.substring(0, index);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(rawCookie.split('=')[0], rawCookie.split('=')[1]);
     }
   }
@@ -293,46 +290,47 @@ class ApiService {
   Future<void> logout() async {
     await _initCookie();
     await http.post(Uri.parse("$_domain/logout"), headers: headers);
-    storage.deleteItem('token');
-    storage.deleteItem('refreshToken');
+
+    prefs.clear();
   }
 
   Future<void> _updateAccessToken(http.Response res) async {
     String? rawToken = res.headers['x-auth-token'];
-
-    await storage.ready;
+    print(res.headers);
 
     if (rawToken != null) {
-      storage.setItem('token', rawToken);
+      prefs.setString('token', rawToken);
     }
   }
 
   Future<void> _updateRefreshToken(http.Response res) async {
     String? rawToken = res.headers['x-refresh-token'];
 
-    await storage.ready;
-
     if (rawToken != null) {
-      storage.setItem('refreshToken', rawToken);
+      prefs.setString('refreshToken', rawToken);
     }
+
+    await _updateAccessToken(res);
   }
 
   Future<void> refreshAccessToken() async {
-    if (getRefreshToken().isEmpty) throw Exception("401");
+    var refreshToken = await getRefreshToken();
+    if (refreshToken.isEmpty) throw Exception("401");
     var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
     if (res.statusCode != 200 && res.statusCode != 401) throw Exception("401");
-    _updateAccessToken(res);
+    await _updateAccessToken(res);
   }
 
-  bool isLogin() {
-    return getToken() == "" ? headers["token"] != null : true;
+  Future<bool> isLogin() async {
+    await _initCookie();
+    return await getToken() == "" ? headers["token"] != null : true;
   }
 
-  String getToken() {
-    return storage.getItem('token') ?? "";
+  Future<String> getToken() async {
+    return prefs.getString("token") ?? "";
   }
 
-  String getRefreshToken() {
-    return storage.getItem('refreshToken') ?? "";
+  Future<String> getRefreshToken() async {
+    return prefs.getString("refreshToken") ?? "";
   }
 }
