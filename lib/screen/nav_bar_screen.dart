@@ -2,8 +2,23 @@ import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 
-class NavMenu extends StatelessWidget {
+class NavMenu extends StatefulWidget {
   const NavMenu({super.key});
+
+  @override
+  State<NavMenu> createState() => _NavMenuState();
+}
+
+class _NavMenuState extends State<NavMenu> {
+  late var isLogin = false;
+
+  @override
+  void initState() {
+    ApiService().isLogin().then(
+          (value) => setState(() => isLogin = value),
+        );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +40,8 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.post_add_outlined,
                   size: 30,
@@ -49,10 +64,10 @@ class NavMenu extends StatelessWidget {
               ),
             ),
           ),
-          if (ApiService().isLogin())
+          if (isLogin)
             ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Icon(
                     Icons.account_circle,
                     size: 30,
@@ -73,8 +88,8 @@ class NavMenu extends StatelessWidget {
               },
             ),
           ListTile(
-            title: const Row(
-              children: [
+            title: Row(
+              children: const [
                 Icon(
                   Icons.search,
                   size: 30,
@@ -94,10 +109,10 @@ class NavMenu extends StatelessWidget {
               Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
             },
           ),
-          if (ApiService().isLogin())
+          if (isLogin)
             ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Icon(
                     Icons.logout,
                     size: 30,
@@ -119,10 +134,10 @@ class NavMenu extends StatelessWidget {
                     context, '/login', (_) => false);
               },
             ),
-          if (!ApiService().isLogin())
+          if (!isLogin)
             ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Icon(
                     Icons.login,
                     size: 30,

@@ -44,9 +44,14 @@ class _AppState extends State<App> {
     }
   }
 
+  late var isLogin = false;
+
   @override
   void initState() {
     getSchoolList();
+    ApiService().isLogin().then(
+          (value) => setState(() => isLogin = value),
+        );
     setState(() {});
     super.initState();
   }
@@ -62,7 +67,7 @@ class _AppState extends State<App> {
           ),
         ),
         actions: [
-          if (!ApiService().isLogin())
+          if (!isLogin)
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, "/login"),
               child: const Padding(
