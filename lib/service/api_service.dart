@@ -298,7 +298,7 @@ class ApiService {
   }
 
   Future<void> _updateAccessToken(http.Response res) async {
-    String? rawToken = res.headers['X-Auth-Token'];
+    String? rawToken = res.headers['x-auth-token'];
 
     await storage.ready;
 
@@ -308,7 +308,7 @@ class ApiService {
   }
 
   Future<void> _updateRefreshToken(http.Response res) async {
-    String? rawToken = res.headers['X-Refresh-Token'];
+    String? rawToken = res.headers['x-refresh-token'];
 
     await storage.ready;
 
