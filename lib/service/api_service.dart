@@ -36,7 +36,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school/meal");
 
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -53,7 +56,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school-info/$schoolId");
 
     var res = await http.get(url, headers: headers);
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -78,7 +84,10 @@ class ApiService {
           "phoneNumber": phoneNumber,
           "code": code,
         }));
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -93,7 +102,10 @@ class ApiService {
 
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"phoneNumber": number}));
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -106,7 +118,10 @@ class ApiService {
     var url = Uri.parse("$_domain/posts?page=$page&schoolId=$schoolId");
 
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -147,7 +162,10 @@ class ApiService {
         'description': description.trimLeft().replaceAll(RegExp('\\s+'), ' ')
       }),
     );
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode == 200) return;
     throw Exception(res.statusCode.toString());
   }
@@ -172,7 +190,10 @@ class ApiService {
         'rememberMe': rememberMe.toString(),
       },
     );
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) throw Error();
     var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     var memberInfo = MemberInfo.fromJson(body.data);
@@ -206,7 +227,10 @@ class ApiService {
       headers: headers,
       body: jsonEncode(body.toJson()),
     );
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 201) {
       throw Exception(res.statusCode);
     }
@@ -219,7 +243,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
 
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
@@ -236,7 +263,10 @@ class ApiService {
     var url = Uri.parse("$_domain/post/report/$postId");
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"reason": reason}));
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -249,7 +279,10 @@ class ApiService {
 
     var url = Uri.parse("$_domain/post/like/add/$postId");
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -263,7 +296,10 @@ class ApiService {
       url,
       headers: headers,
     );
-    if (res.statusCode == 401) refreshAccessToken();
+    if (res.statusCode == 401) {
+      refreshAccessToken();
+      throw Exception(401);
+    }
     if (res.statusCode != 202) throw Exception(res.statusCode);
 
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
