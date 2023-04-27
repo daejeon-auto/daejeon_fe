@@ -312,7 +312,9 @@ class ApiService {
     var refreshToken = await getRefreshToken();
     if (refreshToken.isEmpty) throw Exception("401");
     var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
-    if (res.statusCode != 200 && res.statusCode != 401) throw Exception("401");
+    if (res.statusCode != 200 || res.headers['x-auth-token'] == "Bearer null") {
+      throw Exception("401");
+    }
     await _updateAccessToken(res);
   }
 
