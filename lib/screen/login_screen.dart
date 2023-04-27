@@ -104,7 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextField(
                             controller: idController,
                             inputFormatters: [
-                              FilteringTextInputFormatter.deny(RegExp(r'[:]'))
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
                             ],
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(
@@ -118,6 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
+                            ],
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(
                               hintText: "password",

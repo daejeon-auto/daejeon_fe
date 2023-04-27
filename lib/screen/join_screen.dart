@@ -230,8 +230,8 @@ class _JoinScreenState extends State<JoinScreen> {
                                 TextFormField(
                                   controller: idController,
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.deny(
-                                        RegExp(r'[:]'))
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
                                   ],
                                   validator: (String? val) {
                                     if (val != null) {
@@ -247,8 +247,8 @@ class _JoinScreenState extends State<JoinScreen> {
                                 TextFormField(
                                   controller: passwordController,
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.deny(
-                                        RegExp(r'[:]'))
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
                                   ],
                                   validator: (String? val) {
                                     if (val != null) {
@@ -300,8 +300,8 @@ class _JoinScreenState extends State<JoinScreen> {
                                     TextFormField(
                                       controller: phoneNumberController,
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.deny(
-                                            RegExp(r'[:]'))
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[0-9]'))
                                       ],
                                       validator: (String? val) {
                                         if (val != null) {
@@ -373,11 +373,8 @@ class _JoinScreenState extends State<JoinScreen> {
                                                       phoneNumber:
                                                           phoneNumberController
                                                               .text,
-                                                      code: "",
                                                       schoolId:
                                                           school.id.toString(),
-                                                      authType: describeEnum(
-                                                          AuthType.DIRECT),
                                                     );
                                                     join();
                                                   }
