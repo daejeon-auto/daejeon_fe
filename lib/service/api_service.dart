@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:daejeon_fe/main.dart';
 
 import 'package:daejeon_fe/model/common/result_model.dart';
 import 'package:daejeon_fe/model/join_model.dart';
@@ -13,8 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static const String _domain = "http://localhost:8080";
-  // static const String _domain = "https://inab.site";
+  // static const String _domain = "http://localhost:8080";
+  static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
@@ -106,12 +107,21 @@ class ApiService {
     var url = Uri.parse("$_domain/posts?page=$page&schoolId=$schoolId");
 
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode != 200 && res.statusCode != 401) {
+    var data = jsonDecode(utf8.decode(res.bodyBytes));
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return PostListModel(
+        totalPost: 0,
+        totalPage: 0,
+        postList: [],
+      );
+    }
+    if ((res.statusCode != 200 && res.statusCode != 401) ||
+        data["hasError"] == true) {
       throw Exception(res.statusCode);
     }
 
-    var body = jsonDecode(utf8.decode(res.bodyBytes))['data'];
+    var body = data['data'];
     List<dynamic> postListDy = body['postList'];
     var postList = postListDy
         .map((e) => PostModel(
@@ -313,9 +323,10 @@ class ApiService {
     if (refreshToken.isEmpty) throw Exception("401");
     var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
     if (res.statusCode != 200 || res.headers['x-auth-token'] == "Bearer null") {
-      throw Exception("401");
+      throw Exception(401);
     }
     await _updateAccessToken(res);
+    navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (_) => false);
   }
 
   Future<bool> isLogin() async {

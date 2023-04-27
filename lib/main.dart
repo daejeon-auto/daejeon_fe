@@ -7,11 +7,13 @@ import 'package:daejeon_fe/screen/my_page_screen.dart';
 import 'package:daejeon_fe/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(
     MaterialApp(
+      navigatorKey: navigatorKey,
       title: "AnonPost",
       routes: {
         "/login": (context) => const LoginScreen(),
