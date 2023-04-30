@@ -210,13 +210,15 @@ class ApiService {
     if (body.password.length < 8) throw Exception("passwordLen");
     if (body.phoneNumber.length > 11) throw Exception("phoneNumberLen");
 
+    // 이거 안하면 origin cors error 남;;
+    headers.remove("X-Auth-Token");
+
     var url = Uri.parse("$_domain/sign-up");
     var res = await http.post(
       url,
       headers: headers,
       body: jsonEncode(body.toJson()),
     );
-    if (res.statusCode == 401) await refreshAccessToken();
     if (res.statusCode != 201) {
       throw Exception(res.statusCode);
     }
