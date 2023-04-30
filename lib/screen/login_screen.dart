@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: idController,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
+                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()_.,]'))
                             ],
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             autocorrect: false,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
+                                  RegExp(r'[a-zA-Z0-9!@#$%^&*()_.,]'))
                             ],
                             keyboardType: TextInputType.multiline,
                             decoration: const InputDecoration(

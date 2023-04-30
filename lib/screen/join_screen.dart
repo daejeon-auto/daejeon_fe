@@ -1,9 +1,7 @@
-import 'package:daejeon_fe/model/common/auth_type.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/school/school_list_model.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:daejeon_fe/widget/select_school_dialog_widget.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/services.dart'
@@ -231,7 +229,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                   controller: idController,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
+                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()_.,]'))
                                   ],
                                   validator: (String? val) {
                                     if (val != null) {
@@ -248,7 +246,7 @@ class _JoinScreenState extends State<JoinScreen> {
                                   controller: passwordController,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()]'))
+                                        RegExp(r'[a-zA-Z0-9!@#$%^&*()_.,]'))
                                   ],
                                   validator: (String? val) {
                                     if (val != null) {
