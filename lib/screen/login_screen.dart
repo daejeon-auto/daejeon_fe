@@ -1,3 +1,4 @@
+import 'package:daejeon_fe/screen/alert_screen.dart';
 import 'package:daejeon_fe/screen/join_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
@@ -33,28 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (res.isNotEmpty) {
         // ignore: use_build_context_synchronously
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Center(child: Text("정지 내역이 존재합니다.")),
-            actions: [
-              Column(
-                children: [
-                  for (int i = 0; i < res.length; i++)
-                    Text(
-                        "${res[i].id} / ${res[i].reason} / ${res[i].rating} / ${res[i].expiredDate}"),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                        context, '/home', (_) => false),
-                    child: const Text("닫기"),
-                  )
-                ],
-              ),
-            ],
-          ),
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+              pageBuilder: ((context, animation, secondaryAnimation) =>
+                  AlertScreen(res: res))),
+          (route) => false,
         );
         return;
       }
