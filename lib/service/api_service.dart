@@ -142,7 +142,7 @@ class ApiService {
     return postListModel;
   }
 
-  writePost({required String description}) async {
+  writePost({required String description, required int schoolId}) async {
     await _initCookie();
 
     if (description.trimRight().trimLeft().length < 10) {
@@ -154,11 +154,16 @@ class ApiService {
       url,
       headers: headers,
       body: jsonEncode({
-        'description': description.trimLeft().replaceAll(RegExp('\\s+'), ' ')
+        'description': description.trimLeft().replaceAll(RegExp('\\s+'), ' '),
+        'schoolId': schoolId,
       }),
     );
     if (res.statusCode == 401) await refreshAccessToken();
     if (res.statusCode == 200) return;
+    if (res.statusCode == 401) {
+      var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+      throw Exception(body.data);
+    }
     throw Exception(res.statusCode.toString());
   }
 

@@ -5,7 +5,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:webviewx/webviewx.dart';
 
 class PostAddScreen extends StatefulWidget {
-  const PostAddScreen({Key? key}) : super(key: key);
+  const PostAddScreen({Key? key, required this.schoolId}) : super(key: key);
+
+  final int schoolId;
 
   @override
   State<PostAddScreen> createState() => _PostAddScreenState();
@@ -29,13 +31,19 @@ class _PostAddScreenState extends State<PostAddScreen> {
         isLoading = true;
       });
 
-      await ApiService().writePost(description: descController.text);
+      await ApiService().writePost(
+        description: descController.text,
+        schoolId: widget.schoolId,
+      );
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } on Exception catch (e) {
       isLoading = false;
       if (e.toString() == "Exception: 400") {
         errorMsg = "글에 비속어가 포함돼있거나 15자 이상, 혹은 100자 이하이어야합니다.";
+      }
+      if (e.toString() == "Exception: 403") {
+        errorMsg = e.toString();
       }
       setState(() {});
       if (e.toString() == "Exception: 401") {

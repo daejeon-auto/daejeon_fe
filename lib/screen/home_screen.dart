@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const PostAddScreen(),
+            builder: (context) => PostAddScreen(schoolId: schoolInfo!.id),
           ),
         ),
         child: const Icon(Icons.add),

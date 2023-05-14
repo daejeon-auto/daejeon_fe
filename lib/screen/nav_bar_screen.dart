@@ -1,4 +1,3 @@
-import 'package:daejeon_fe/screen/post_add_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 
@@ -36,31 +35,6 @@ class _NavMenuState extends State<NavMenu> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 25,
-              ),
-            ),
-          ),
-          ListTile(
-            title: Row(
-              children: const [
-                Icon(
-                  Icons.post_add_outlined,
-                  size: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "글 작성",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PostAddScreen(),
               ),
             ),
           ),
