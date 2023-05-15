@@ -336,6 +336,50 @@ class ApiService {
     navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (_) => false);
   }
 
+  Future<void> pushAuthCode(String phoneNumber) async {
+    var res = await http.post(Uri.parse("$_domain/push-auth-code"),
+        headers: headers, body: jsonEncode({'phoneNumber': phoneNumber}));
+
+    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+
+    var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+
+    if (result.hasError) {
+      throw Exception(result.data);
+    }
+  }
+
+  Future<void> chkAuthCode(String phoneNumber, String code) async {
+    var res = await http.post(Uri.parse("$_domain/chk-auth-code"),
+        headers: headers,
+        body: jsonEncode({
+          'phoneNumber': phoneNumber,
+          'code': code,
+        }));
+
+    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+  }
+
+  Future<void> chagnePwd(String phoneNumber, String pwd) async {
+    var res = await http.post(Uri.parse("$_domain/password/change"),
+        headers: headers,
+        body: <String, String>{
+          'phone_number': phoneNumber,
+          'new_password': pwd,
+        });
+
+    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode != 200) throw Exception(res.statusCode);
+
+    var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
+
+    if (result.hasError) {
+      throw Exception(result.data);
+    }
+  }
+
   Future<bool> isLogin() async {
     await _initCookie();
     return await getToken() == "" ? headers["token"] != null : true;

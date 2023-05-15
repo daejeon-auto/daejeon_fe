@@ -1,4 +1,6 @@
 import 'package:daejeon_fe/screen/alert_screen.dart';
+import 'package:daejeon_fe/screen/auth_code_screen.dart';
+import 'package:daejeon_fe/screen/chage_password.dart';
 import 'package:daejeon_fe/screen/join_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
@@ -139,6 +141,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 20,
                         ),
+                        TextButton(
+                          onPressed: login,
+                          style: TextButton.styleFrom(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 115),
+                            backgroundColor: Colors.blueAccent.shade200,
+                          ),
+                          child: const Text(
+                            "로그인",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -149,21 +168,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   builder: (context) => const JoinScreen(),
                                 ),
                               ),
-                              child: const Text("회원가입"),
+                              child: const Text("  회원가입 "),
                             ),
                             TextButton(
-                              onPressed: login,
-                              style: TextButton.styleFrom(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                backgroundColor: Colors.blueAccent.shade200,
-                              ),
-                              child: const Text(
-                                "로그인",
-                                style: TextStyle(
-                                  color: Colors.white,
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AuthCodeScreen(
+                                      redirectLink: ChangePwd()),
                                 ),
                               ),
+                              child: const Text("비밀번호 찾기"),
                             ),
                           ],
                         ),
