@@ -28,7 +28,12 @@ class _AuthCodeScreenState extends State<AuthCodeScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (ctx) => widget.redirectLink));
       } catch (e) {
-        print(e);
+        showDialog(
+          context: context,
+          builder: (ctx) => const AlertDialog(
+            title: Text("코드를 다시 확인해 주십시오."),
+          ),
+        );
       }
     }
 

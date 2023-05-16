@@ -23,7 +23,7 @@ class _ChangePwdState extends State<ChangePwd> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text("비밀번호 재설정중 에러 발생"),
+          title: const Text("비밀번호 재설정 중 에러 발생"),
           content: Text(e.toString()),
         ),
       );

@@ -352,7 +352,10 @@ class ApiService {
 
   Future<void> chkAuthCode(String phoneNumber, String code) async {
     var res = await http.post(Uri.parse("$_domain/chk-auth-code"),
-        headers: headers,
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': 'application/json',
+        },
         body: jsonEncode({
           'phoneNumber': phoneNumber,
           'code': code,
@@ -365,10 +368,10 @@ class ApiService {
   Future<void> chagnePwd(String phoneNumber, String pwd) async {
     var res = await http.post(Uri.parse("$_domain/password/change"),
         headers: headers,
-        body: <String, String>{
+        body: jsonEncode({
           'phone_number': phoneNumber,
           'new_password': pwd,
-        });
+        }));
 
     if (res.statusCode == 401) await refreshAccessToken();
     if (res.statusCode != 200) throw Exception(res.statusCode);
