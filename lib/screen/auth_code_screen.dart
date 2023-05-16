@@ -66,7 +66,7 @@ class _AuthCodeScreenState extends State<AuthCodeScreen> {
 
     void pushChkCode(BuildContext context) async {
       try {
-        await ApiService().pushChkCode(number: phoneNumberController.text);
+        await ApiService().pushAuthCode(phoneNumberController.text);
 
         // ignore: use_build_context_synchronously
         showDialog(context: context, builder: (_) => codeChkWidget());
