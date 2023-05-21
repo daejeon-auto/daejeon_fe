@@ -1,4 +1,4 @@
-package com.example.daejeon_fe
+package com.inab.anonpost
 
 import io.flutter.embedding.android.FlutterActivity
 

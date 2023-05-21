@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.daejeon_fe">
+    package="com.inab.anonpost">
    <application
-        android:label="daejeon_fe"
-        android:name="${applicationName}"
+        android:label="AnonPost"
+        android:name="AnonPost"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
