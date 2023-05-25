@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:daejeon_fe/main.dart';
 
+import 'package:daejeon_fe/main.dart';
 import 'package:daejeon_fe/model/common/result_model.dart';
 import 'package:daejeon_fe/model/join_model.dart';
 import 'package:daejeon_fe/model/member_info.dart';
@@ -37,7 +37,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school/meal");
 
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await schoolMenu();
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -54,7 +57,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school-info/$schoolId");
 
     var res = await http.get(url, headers: headers);
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await schoolName(schoolId: schoolId);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -79,7 +85,10 @@ class ApiService {
           "phoneNumber": phoneNumber,
           "code": code,
         }));
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await chkCode(code: code, phoneNumber: phoneNumber);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -94,7 +103,10 @@ class ApiService {
 
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"phoneNumber": number}));
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await pushChkCode(number: number);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -110,11 +122,7 @@ class ApiService {
     var data = jsonDecode(utf8.decode(res.bodyBytes));
     if (res.statusCode == 401) {
       await refreshAccessToken();
-      return PostListModel(
-        totalPost: 0,
-        totalPage: 0,
-        postList: [],
-      );
+      return await getPostList(page: page, schoolId: schoolId);
     }
     if ((res.statusCode != 200 && res.statusCode != 401) ||
         data["hasError"] == true) {
@@ -158,13 +166,11 @@ class ApiService {
         'schoolId': schoolId,
       }),
     );
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode == 200) return;
     if (res.statusCode == 401) {
-      var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
-      throw Exception(body.data);
+      await refreshAccessToken();
+      return await writePost(description: description, schoolId: schoolId);
     }
-    throw Exception(res.statusCode.toString());
+    return;
   }
 
   Future<List<Punish>> loginPost({
@@ -187,7 +193,11 @@ class ApiService {
         'rememberMe': rememberMe.toString(),
       },
     );
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await loginPost(
+          id: id, password: password, rememberMe: rememberMe);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) throw Error();
     var body = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     var memberInfo = MemberInfo.fromJson(body.data);
@@ -236,7 +246,10 @@ class ApiService {
     var url = Uri.parse("$_domain/school/list");
     var res = await http.get(url);
 
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await getSchoolList();
+    }
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
@@ -253,7 +266,10 @@ class ApiService {
     var url = Uri.parse("$_domain/post/report/$postId");
     var res = await http.post(url,
         headers: headers, body: jsonEncode({"reason": reason}));
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await report(postId, reason);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -266,7 +282,10 @@ class ApiService {
 
     var url = Uri.parse("$_domain/post/like/add/$postId");
     var res = await http.post(url, headers: headers);
-    if (res.statusCode == 401) await refreshAccessToken();
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await convertLike(postId);
+    }
     if (res.statusCode != 200 && res.statusCode != 401) {
       throw Exception(res.statusCode);
     }
@@ -275,13 +294,20 @@ class ApiService {
   }
 
   Future<MemberInfo> getMemberInfo() async {
+    await _initCookie();
+
     var url = Uri.parse("$_domain/member/info");
     var res = await http.post(
       url,
       headers: headers,
     );
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode != 202) throw Exception(res.statusCode);
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await getMemberInfo();
+    }
+    if (res.statusCode != 202 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
 
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     var memberInfo = MemberInfo.fromJson(result.data);
@@ -330,18 +356,23 @@ class ApiService {
     if (refreshToken.isEmpty) throw Exception("401");
     var res = await http.post(Uri.parse("$_domain/refresh"), headers: headers);
     if (res.statusCode != 200 || res.headers['x-auth-token'] == "Bearer null") {
-      throw Exception(401);
+      navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil('/login', (_) => false);
     }
     await _updateAccessToken(res);
-    navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (_) => false);
   }
 
   Future<void> pushAuthCode(String phoneNumber) async {
     var res = await http.post(Uri.parse("$_domain/push-auth-code"),
         headers: headers, body: jsonEncode({'phoneNumber': phoneNumber}));
 
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await pushAuthCode(phoneNumber);
+    }
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
 
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
 
@@ -361,8 +392,13 @@ class ApiService {
           'code': code,
         }));
 
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await chkAuthCode(phoneNumber, code);
+    }
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
   }
 
   Future<void> chagnePwd(String phoneNumber, String pwd) async {
@@ -373,8 +409,13 @@ class ApiService {
           'new_password': pwd,
         }));
 
-    if (res.statusCode == 401) await refreshAccessToken();
-    if (res.statusCode != 200) throw Exception(res.statusCode);
+    if (res.statusCode == 401) {
+      await refreshAccessToken();
+      return await chagnePwd(phoneNumber, pwd);
+    }
+    if (res.statusCode != 200 && res.statusCode != 401) {
+      throw Exception(res.statusCode);
+    }
 
     var result = Result.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
 

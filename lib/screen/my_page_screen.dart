@@ -18,15 +18,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   @override
   void initState() {
-    getMeal().then((value) => {
-          meal = value,
-          setState(() {}),
-        });
-
     getMemberInfo().then((value) async {
       memberInfo = value;
       ready = true;
-      setState(() {});
+      getMeal().then((value) => {
+            meal = value,
+            setState(() {}),
+          });
     });
 
     super.initState();
@@ -36,11 +34,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     try {
       return await ApiService().getMemberInfo();
     } catch (e) {
-      if (e.toString() == "Exception: 401") {
-        Navigator.pushNamedAndRemoveUntil(context, "/login", (_) => false);
-      }
-
-      throw ("");
+      throw (e.toString());
     }
   }
 
@@ -48,10 +42,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
     try {
       return await ApiService().schoolMenu();
     } catch (e) {
-      if (e.toString() == "Exception: 401") {
-        Navigator.pushNamedAndRemoveUntil(context, "/login", (_) => false);
-      }
-
       throw ("");
     }
   }
