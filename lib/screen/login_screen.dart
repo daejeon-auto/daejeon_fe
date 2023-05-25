@@ -27,6 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
+    if (idController.text.length < 5) return;
+    if (passwordController.text.length < 8) return;
+
     try {
       var res = await ApiService().loginPost(
         id: idController.text,

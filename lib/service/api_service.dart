@@ -14,8 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/post/post_model.dart';
 
 class ApiService {
-  static const String _domain = "http://localhost:8080";
-  // static const String _domain = "https://inab.site";
+  // static const String _domain = "http://localhost:8080";
+  static const String _domain = "https://inab.site";
   static Map<String, String> headers = {
     "Content-Type": "application/json",
     'Accept': 'application/json',
