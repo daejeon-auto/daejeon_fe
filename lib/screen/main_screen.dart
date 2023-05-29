@@ -1,10 +1,10 @@
+import 'package:daejeon_fe/screen/home_screen.dart';
+import 'package:daejeon_fe/screen/nav_bar_screen.dart';
 import 'package:daejeon_fe/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../model/school/school_list_model.dart';
-import 'home_screen.dart';
-import 'nav_bar_screen.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -60,9 +60,17 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: isLogin
-          ? const NavMenu()
-          : GestureDetector(
+      endDrawer: isLogin ? const NavMenu() : null,
+      appBar: AppBar(
+        title: const Text(
+          "INAB",
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        actions: [
+          if (!isLogin)
+            GestureDetector(
               onTap: () => Navigator.pushNamed(context, "/login"),
               child: const Padding(
                 padding: EdgeInsets.all(15.0),
@@ -75,13 +83,7 @@ class _AppState extends State<App> {
                 ),
               ),
             ),
-      appBar: AppBar(
-        title: const Text(
-          "INAB",
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
