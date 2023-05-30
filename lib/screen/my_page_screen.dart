@@ -115,77 +115,90 @@ class _MyPageScreenState extends State<MyPageScreen> {
                               ),
                               meal == null
                                   ? const Text("급식 불러오는 중")
-                                  : Column(children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      const Text(
-                                        "조식",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      if (meal!.breakfast == null)
-                                        const Text(
-                                          "조식이 없습니다.",
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                          ),
-                                        )
-                                      else
-                                        ...meal!.breakfast!.map((element) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(7.5),
-                                            child: Text(element),
-                                          );
-                                        }),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      const Text(
-                                        "중식",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      if (meal!.lunch == null)
-                                        const Text(
-                                          "중식이 없습니다.",
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                          ),
-                                        )
-                                      else
-                                        ...meal!.lunch!.map((element) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(7.5),
-                                            child: Text(element),
-                                          );
-                                        }),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      const Text(
-                                        "석식",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      if (meal!.dinner == null)
-                                        const Text(
-                                          "석식이 없습니다.",
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                          ),
-                                        )
-                                      else
-                                        ...meal!.dinner!.map((element) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(7.5),
-                                            child: Text(element),
-                                          );
-                                        }),
-                                    ]),
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              const Text(
+                                                "조식",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              if (meal!.breakfast!.isEmpty)
+                                                const Text(
+                                                  "조식이 없습니다.",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                )
+                                              else
+                                                ...meal!.breakfast!
+                                                    .map((element) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(3),
+                                                    child: Text(element),
+                                                  );
+                                                }),
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              const Text(
+                                                "중식",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              if (meal!.lunch!.isEmpty)
+                                                const Text(
+                                                  "중식이 없습니다.",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                )
+                                              else
+                                                ...meal!.lunch!.map((element) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(3),
+                                                    child: Text(element),
+                                                  );
+                                                }),
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              const Text(
+                                                "석식",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              if (meal!.dinner!.isEmpty)
+                                                const Text(
+                                                  "석식이 없습니다.",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                )
+                                              else
+                                                ...meal!.dinner!.map((element) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(3),
+                                                    child: Text(element),
+                                                  );
+                                                }),
+                                            ]),
+                                      ],
+                                    ),
                             ],
                           ),
                         )
