@@ -24,22 +24,39 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="daejeon_fe">
+  <meta name="google-site-verification" content="5Z2VHw_Mf0QypVY5gAJUvFaBd1sdnN2npLzhOHNpHSU" />
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>daejeon_fe</title>
+  <title>AnonPost</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = "3691915578";
+    var serviceWorkerVersion = '2507599585';
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <style>
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex; /* Default Axis is X*/
+      justify-content: center; /* Main Axis */
+      align-items: center; /* Cross Axis */
+    }
+    .indicator{
+      width: 50vw;
+    }
+  </style>
 </head>
-<body>
+<body style="overflow: hidden">
+  <div id="loading_indicator" class="container">
+    <img class="indicator" src="./assets/loading.gif" />
+  </div>
+  
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
@@ -53,6 +70,15 @@
         return appRunner.runApp();
       });
     });
+
+    window.onload = function () {
+        setTimeout(function () {
+          var loadingIndicator = document.getElementById("loading_indicator");
+          if (loadingIndicator) {
+            loadingIndicator.remove();
+          }
+        }, 10000);
+    };
   </script>
 </body>
 </html>
