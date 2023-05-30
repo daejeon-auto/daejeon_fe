@@ -75,7 +75,7 @@ class _AppState extends State<App> {
               child: const Padding(
                 padding: EdgeInsets.all(15.0),
                 child: Text(
-                  "로그인하기",
+                  "로그인",
                   softWrap: true,
                   style: TextStyle(
                     fontSize: 15,
