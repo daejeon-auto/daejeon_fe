@@ -1,5 +1,5 @@
 class SchoolMealModel {
-  final List<String>? breakfast, lunch, dinner;
+  final List<dynamic>? breakfast, lunch, dinner;
 
   SchoolMealModel.fromJson(Map<String, dynamic> json)
       : breakfast = json["breakfast"],
