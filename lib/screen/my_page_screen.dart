@@ -114,7 +114,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                 height: 20,
                               ),
                               meal == null
-                                  ? const Text("급식 불러오는 중")
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Text("급식 불러오는 중"),
+                                      ],
+                                    )
                                   : Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
