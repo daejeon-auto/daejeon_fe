@@ -88,110 +88,106 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       ),
                       if (!ready) const Text("데이터 로딩 중"),
                       if (ready)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "전화번호: ${memberInfo.phoneNumber}",
-                              style: const TextStyle(
-                                fontSize: 20,
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "전화번호: ${memberInfo.phoneNumber}",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "학교: ${memberInfo.schoolName}",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              Text(
+                                "학교: ${memberInfo.schoolName}",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "지역: ${memberInfo.schoolLocate}",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              Text(
+                                "지역: ${memberInfo.schoolLocate}",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            meal == null
-                                ? const Text("급식 불러오는 중")
-                                : Column(children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    const Text(
-                                      "조식",
-                                      style: TextStyle(
-                                        fontSize: 20,
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              meal == null
+                                  ? const Text("급식 불러오는 중")
+                                  : Column(children: [
+                                      const SizedBox(
+                                        height: 20,
                                       ),
-                                    ),
-                                    meal!.breakfast == null
-                                        ? const Text(
-                                            "조식이 없습니다.",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                            ),
-                                          )
-                                        : ListView.separated(
-                                            shrinkWrap: true,
-                                            itemBuilder: (ctx, idx) =>
-                                                Text(meal!.breakfast![idx]),
-                                            separatorBuilder: (context, idx) =>
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                            itemCount: meal!.breakfast!.length),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    const Text(
-                                      "중식",
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                      const Text(
+                                        "조식",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
                                       ),
-                                    ),
-                                    meal!.lunch == null
-                                        ? const Text(
-                                            "중식이 없습니다.",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                            ),
-                                          )
-                                        : ListView.separated(
-                                            shrinkWrap: true,
-                                            itemBuilder: (ctx, idx) => Center(
-                                                child: Text(meal!.lunch![idx])),
-                                            separatorBuilder: (context, idx) =>
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                            itemCount: meal!.lunch!.length),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    const Text(
-                                      "석식",
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                      if (meal!.breakfast == null)
+                                        const Text(
+                                          "조식이 없습니다.",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        )
+                                      else
+                                        ...meal!.breakfast!.map((element) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(7.5),
+                                            child: Text(element),
+                                          );
+                                        }),
+                                      const SizedBox(
+                                        height: 20,
                                       ),
-                                    ),
-                                    meal!.dinner == null
-                                        ? const Text(
-                                            "석식이 없습니다.",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                            ),
-                                          )
-                                        : ListView.separated(
-                                            shrinkWrap: true,
-                                            itemBuilder: (ctx, idx) =>
-                                                Text(meal!.dinner![idx]),
-                                            separatorBuilder: (context, idx) =>
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                            itemCount: meal!.dinner!.length),
-                                  ]),
-                          ],
+                                      const Text(
+                                        "중식",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      if (meal!.lunch == null)
+                                        const Text(
+                                          "중식이 없습니다.",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        )
+                                      else
+                                        ...meal!.lunch!.map((element) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(7.5),
+                                            child: Text(element),
+                                          );
+                                        }),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      const Text(
+                                        "석식",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      if (meal!.dinner == null)
+                                        const Text(
+                                          "석식이 없습니다.",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        )
+                                      else
+                                        ...meal!.dinner!.map((element) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(7.5),
+                                            child: Text(element),
+                                          );
+                                        }),
+                                    ]),
+                            ],
+                          ),
                         )
                     ],
                   ),
